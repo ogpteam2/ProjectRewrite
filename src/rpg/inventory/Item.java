@@ -1,5 +1,8 @@
 package rpg.inventory;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+import rpg.value.Weight;
 
 /**
  * A superclass of items for all the items in the game.
@@ -9,8 +12,8 @@ package rpg.inventory;
 public abstract class Item {
 	
 	
-	public Item(int value){
-		
+	public Item(int value, long identifier){
+		this.identifier = identifier;
 	}
 	
 	/*****************************
@@ -32,4 +35,23 @@ public abstract class Item {
 	 * @return
 	 */
 	public abstract boolean canHaveAsValue();
+	
+	
+	/*****************************
+	 * Weight
+	 *****************************/
+	
+	private Weight weight;
+	
+	/*****************************
+	 * Identifier
+	 *****************************/
+	
+	private final long identifier;
+	
+	@Basic
+	@Raw
+	public long getIdentifier(){
+		return this.identifier;
+	}
 }

@@ -12,8 +12,8 @@ import rpg.InvalidItemException;
  */
 public abstract class Container extends Item{
 
-	public Container(int value) {
-		super(value);
+	public Container(int value, long identifier) {
+		super(value, identifier);
 		
 	}
 	
@@ -33,13 +33,25 @@ public abstract class Container extends Item{
 	
 	
 	/**
-	 * Adds the given item to the prime object
+	 * Adds the given item to the prime object.
 	 * @param item
-	 * 		  Item to be added
+	 * 		  Item to be added.
+	 * @effect Item gets a reference 
+	 * @effect Prime object gets reference to item
 	 * @throws InvalidItemException
-	 * 		   If the item will cause the 
+	 * 		   If the container cannot contain this item an InvalidItemException is thrown
+	 * 		 | !canHaveAsContent(Item item)
 	 */
 	public void addToContent(Item item) throws InvalidItemException{
+		
+	}
+	
+	/**
+	 * 
+	 * @param item
+	 * @throws InvalidItemException
+	 */
+	public void removeFromContent(Item item) throws InvalidItemException{
 		
 	}
 	
@@ -51,7 +63,7 @@ public abstract class Container extends Item{
 	 * Checks whether adding the 
 	 * @return
 	 */
-	protected boolean exceedsCapacity(){
+	protected boolean exceedsCapacity(Item item){
 		return false;
 	}
 	
