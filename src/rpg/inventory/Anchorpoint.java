@@ -38,8 +38,8 @@ public class Anchorpoint implements Holder {
      * Variable that stores a reference to the holder of this anchorpoint.
      *
      * @note An anchorpoint is a container inherent to the holder so it cannot
-     * be transferred between mobiles. As a result the holder is set at
-     * initialisation.
+     *       be transferred between mobiles. As a result the holder is set at
+     *       initialisation.
      */
     private final Mobile holder;
 
@@ -53,6 +53,14 @@ public class Anchorpoint implements Holder {
     }
 
     public boolean canHaveAsItem(Item item){
+        if(item instanceof Weapon || item instanceof Backpack){
+            return true;
+        } else {
+            switch(getType()){
+                case back:
+
+            }
+        }
 
     }
 
@@ -64,7 +72,7 @@ public class Anchorpoint implements Holder {
     private final AnchorType type;
 
     /*****************************
-    * Type
+    * Content
     *****************************/
 
 
@@ -81,14 +89,38 @@ public class Anchorpoint implements Holder {
     /**
      * Drops the item currently being held in this anchorpoint.
      *
-     * @effect The item that was being stored in the anchorpoint has
-     *         its parent set to null.
-     *       |
+     * @pre  The anchorpoint must have
+     * @post The item's parent has to be a null reference.
+     *       | item.getParent() == null
+     * @post The anchorpoint has a null refrence
      */
-    public void dropContent(){
+    public void dropItem(){
 
     }
 
+    /**
+     * Puts the item into the anchorpoint if there is room.
+     *
+     * @pre The anchorpoint may not contain an item.
+     *    | !containsItem()
+     * @post The parent of the item must be set to this anchorpoint.
+     *     | item.getParent() == this
+     * @post The content of this anchorpoint must be the given item.
+     *     | getContent() == item
+     */
+    public void addItem(Item item){
+
+    }
+
+    /**
+     * Checks if the anchorpoint contains an item.
+     *
+     * @return If the
+     */
+    @Raw
+    public boolean containsItem(){
+        return getContent() != null;
+    }
 
     private Item content = null;
 

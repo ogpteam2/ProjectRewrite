@@ -14,9 +14,9 @@ public abstract class Container extends Item implements Holder{
 
 	public Container(int value, long identifier) {
 		super(value, identifier);
-		
+
 	}
-	
+
 	/*****************************
 	 * Content - defensive
 	 *****************************/
