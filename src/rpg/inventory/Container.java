@@ -10,7 +10,7 @@ import rpg.InvalidItemException;
  * @author elias
  *
  */
-public abstract class Container extends Item{
+public abstract class Container extends Item implements Holder{
 
 	public Container(int value, long identifier) {
 		super(value, identifier);
@@ -20,9 +20,7 @@ public abstract class Container extends Item{
 	/*****************************
 	 * Content - defensive
 	 *****************************/
-	
-	
-	
+
 	/**
 	 * Checks whether the prime object can contain the given item
 	 * @param item

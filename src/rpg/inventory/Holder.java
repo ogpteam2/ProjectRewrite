@@ -8,6 +8,12 @@ import rpg.Mobile;
  *
  */
 public interface Holder {
-	
+
+	/**
+	 * Fetches the Mobile which is holding this item.
+	 *
+	 * @return Mobile holder
+	 * 		  The holder of this item.
+	 */
 	public Mobile getHolder();
 }
