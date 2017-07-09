@@ -1,9 +1,11 @@
 package rpg.inventory;
 
+import rpg.Mobile;
+
 public class Purse extends Container {
 
 	public Purse(int value) {
-		super(value);
+		super(value,0L);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,4 +27,8 @@ public class Purse extends Container {
 		return false;
 	}
 
+	@Override
+	public Mobile getHolder() {
+		return null;
+	}
 }

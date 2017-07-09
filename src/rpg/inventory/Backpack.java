@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import be.kuleuven.cs.som.annotate.*;
 import be.kuleuven.cs.som.taglet.*;
+import rpg.Mobile;
 import rpg.utility.BinomialGenerator;
 
 public class Backpack extends Container {
@@ -78,5 +79,9 @@ public class Backpack extends Container {
 	public void setValue(){
 		
 	}
-	
+
+	@Override
+	public Mobile getHolder() {
+		return null;
+	}
 }

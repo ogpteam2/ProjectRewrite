@@ -3,11 +3,13 @@ package rpg;
 import rpg.inventory.AnchorType;
 import rpg.inventory.Anchorpoint;
 import rpg.inventory.Item;
+import rpg.value.Weight;
 
+import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
-public class Mobile {
+public abstract class Mobile {
 
     /**
      *
@@ -18,6 +20,7 @@ public class Mobile {
      *     | for each type in anchorTypes:
      *     |    anchorpoints.get(type) != null
      *
+     * @note All
      */
     public Mobile(EnumSet<AnchorType> anchorTypes){
         anchorpoints = new EnumMap<AnchorType, Anchorpoint>(AnchorType.class);
@@ -56,8 +59,9 @@ public class Mobile {
     }
 
     /**
-     * Retrieves all empty anchorpoints this
-     * @return
+     * Retrieves all empty anchorpoints this mobile has.
+     * @return An arraylist with all anchorpoints that are empty.
+     *       | ArrayList&#60Anchorpoint&#62 empty
      */
     public EnumMap<AnchorType, Anchorpoint> getEmptyAnchorpoints(){
         EnumMap<AnchorType, Anchorpoint> emptyAnchorPoints = new EnumMap<AnchorType, Anchorpoint>(AnchorType.class);
@@ -66,7 +70,25 @@ public class Mobile {
                 emptyAnchorPoints.put(type,anchorpoints.get(type));
             }
         }
+        return emptyAnchorPoints;
+    }
+
+    /**
+     * Calculates the weight of all items held by this mobile.
+     * @return Sum of the total weights of the items held in the anchorpoints.
+     *       |sum = 0
+     *       |for each anchorpoint in anchorpoints:
+     *       |     sum += anchorpoint.getContent().getWeight()
+     */
+    public Weight getCurrentCarriedWeight(){
+        return new Weight(BigDecimal.ZERO);
     }
 
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;
+
+    /*****************************
+     * Capacity
+     *****************************/
+
+    public abstract Weight getCapacity();
 }

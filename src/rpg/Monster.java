@@ -1,6 +1,7 @@
 package rpg;
 
 import rpg.inventory.AnchorType;
+import rpg.value.Weight;
 
 import java.util.EnumSet;
 
@@ -21,6 +22,11 @@ public class Monster extends Mobile {
     public Monster(EnumSet<AnchorType> anchorPoints) {
         super(anchorPoints);
 
+    }
+
+    @Override
+    public Weight getCapacity() {
+        return null;
     }
 
 

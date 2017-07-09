@@ -5,4 +5,17 @@ package rpg.inventory;
  */
 public class Weapon extends Item{
 
+    public Weapon(int value, long identifier) {
+        super(value, identifier);
+    }
+
+    @Override
+    public int getValue() {
+        return 0;
+    }
+
+    @Override
+    public boolean canHaveAsValue() {
+        return false;
+    }
 }

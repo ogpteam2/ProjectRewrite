@@ -30,7 +30,7 @@ public class Anchorpoint implements Holder {
      *****************************/
 
     @Basic
-    public Mobile getHolder({
+    public Mobile getHolder(){
         return this.holder;
     }
 
@@ -52,22 +52,27 @@ public class Anchorpoint implements Holder {
         return type;
     }
 
+    /**
+     * Checks if the anchorpoint contain this item.
+     * @param item
+     *        Item to be checked.
+     * @return An anchorpoint can contain an item if:
+     *         - the given object is not a null reference
+     *         - the given object is an instance of the class item or ducat, thus
+     *           classifying it as a game item.
+     *         - carrying the item will not cause the holding mobile to exceed it's
+     *           carrying capacity.
+     */
     public boolean canHaveAsItem(Item item){
-        if(item instanceof Weapon || item instanceof Backpack){
-            return true;
-        } else {
-            switch(getType()){
-                case back:
-
-            }
-        }
-
+        return false;
     }
 
     /**
      * Variable that determines what type this anchorpoint is.
      *
-     * @note The type of anchorpoint determines what
+     * @note Using an enum type for the anchorpoint is an easy way to both reference
+     *       the anchorpoint in a memory efficient way (using the enum instead of the
+     *       object) and ensure a mobile can only have one of each (using enummap).
      */
     private final AnchorType type;
 
@@ -89,7 +94,8 @@ public class Anchorpoint implements Holder {
     /**
      * Drops the item currently being held in this anchorpoint.
      *
-     * @pre  The anchorpoint must have
+     * @pre  The anchorpoint must contain an item.
+     *      | containsItem()
      * @post The item's parent has to be a null reference.
      *       | item.getParent() == null
      * @post The anchorpoint has a null refrence
@@ -115,7 +121,8 @@ public class Anchorpoint implements Holder {
     /**
      * Checks if the anchorpoint contains an item.
      *
-     * @return If the
+     * @return If the variable content contains a null reference, return false.
+     *       | return content != null
      */
     @Raw
     public boolean containsItem(){
