@@ -2,6 +2,7 @@ package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import rpg.value.Unit;
 import rpg.value.Weight;
 
 /**
@@ -10,16 +11,20 @@ import rpg.value.Weight;
  *
  */
 public abstract class Item {
-	
-	
-	public Item(int value, long identifier){
+
+	public Item(int value, Weight weight, long identifier){
+		this.weight = weight;
 		this.identifier = identifier;
 	}
 	
 	/*****************************
 	 * Value
 	 *****************************/
-	
+
+	/**
+	 * Variable storing the value of this item. The value is expressed as
+	 * an integer amount of ducats.
+	 */
 	private int value = 0;
 	
 	/**
@@ -34,15 +39,30 @@ public abstract class Item {
 	 * 
 	 * @return
 	 */
-	public abstract boolean canHaveAsValue();
+	public abstract boolean canHaveAsValue(int value);
 	
 	
 	/*****************************
-	 * Weight
+	 * Weight - total
 	 *****************************/
-	
-	private Weight weight;
-	
+
+	public Weight getWeight(){
+		return this.weight;
+	}
+
+	/**
+	 * Gets the default weight for the item.
+	 * @note To be used when the given weight is not effective.
+	 * @return A default value for the weight of this item. The concrete value
+	 *         is to be determined on the subclass level.
+	 */
+	public abstract Weight getDefaultWeight();
+
+	/**
+	 * Variable for storing the weight of this item.
+	 */
+	private final Weight weight;
+
 	/*****************************
 	 * Identifier
 	 *****************************/

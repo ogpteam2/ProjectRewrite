@@ -2,6 +2,8 @@ package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import org.omg.CORBA.DynAnyPackage.Invalid;
+import rpg.InvalidItemException;
 import rpg.Mobile;
 import rpg.inventory.Container;
 
@@ -56,15 +58,14 @@ public class Anchorpoint implements Holder {
      * Checks if the anchorpoint contain this item.
      * @param item
      *        Item to be checked.
-     * @return An anchorpoint can contain an item if:
-     *         - the given object is not a null reference
-     *         - the given object is an instance of the class item or ducat, thus
-     *           classifying it as a game item.
-     *         - carrying the item will not cause the holding mobile to exceed it's
-     *           carrying capacity.
+     * @return An anchorpoint can contain an item if carrying the item will not
+     *         cause the holding mobile to exceed it's carrying capacity.
+     *       | return !holder.exceedsCapacity(holder.getCurrentCarriedWeight.add(item.getWeight))
      */
     public boolean canHaveAsItem(Item item){
-        return false;
+        return !getHolder().exceedsCapacity(
+                getHolder().getCurrentCarriedWeight() //get weight currently carried by mobile
+                        .add(item.getWeight())); //add weight carrying the item would add
     }
 
     /**
@@ -78,8 +79,7 @@ public class Anchorpoint implements Holder {
 
     /*****************************
     * Content
-    *****************************/
-
+    ******************************/
 
     @Raw @Basic
     public Item getContent() {
@@ -94,28 +94,47 @@ public class Anchorpoint implements Holder {
     /**
      * Drops the item currently being held in this anchorpoint.
      *
-     * @pre  The anchorpoint must contain an item.
-     *      | containsItem()
+     * @throws InvalidItemException
+     *         If the anchorpoint does not contain an item, exception is thrown.
+     *       | if(!containsItem()) throw InvalidItemException
      * @post The item's parent has to be a null reference.
      *       | item.getParent() == null
      * @post The anchorpoint has a null refrence
      */
-    public void dropItem(){
+    public void dropItem() throws InvalidItemException{
+        if(!containsItem()) throw new InvalidItemException("Anchorpoint does not contain an item!");
+        else {
 
+        }
     }
 
     /**
      * Puts the item into the anchorpoint if there is room.
+
+     * @throws NullPointerException
+     *         If the passed object contains a null reference, exception is thrown.
+     *       | if(item == null) throw NullPointerException
+     * @throws InvalidItemException
+     *         If the anchorpoint already contains an item, exception is thrown.
+     *       | if(containsItem()) throw InvalidItemException
+     *         If the anchorpoint cannot accept the item, exception is thrown.
+     *       | if(!canHaveAsItem(item)) throw InvalidItemException
      *
-     * @pre The anchorpoint may not contain an item.
-     *    | !containsItem()
      * @post The parent of the item must be set to this anchorpoint.
      *     | item.getParent() == this
      * @post The content of this anchorpoint must be the given item.
      *     | getContent() == item
      */
-    public void addItem(Item item){
+    public void addItem(Item item) throws NullPointerException, InvalidItemException {
+        if(containsItem()){
+            throw new InvalidItemException("Anchorpoint already contains an item!");
+        } else if(item == null){
+            throw new NullPointerException();
+        } else if (!canHaveAsItem(item)){
+            throw new InvalidItemException("Anchorpoint cannot accept this item!");
+        } else {
 
+        }
     }
 
     /**

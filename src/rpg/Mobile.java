@@ -84,6 +84,17 @@ public abstract class Mobile {
         return new Weight(BigDecimal.ZERO);
     }
 
+    /**
+     * Checks if the given weight would exceed this mobile's carrying capacity.
+     * @param weight
+     *        Given weight to check against capacity.
+     * @return If the given weight is larger than the mobile's carrying capacity.
+     *       | getCapacity().compareTo(weight) == -1
+     */
+    public boolean exceedsCapacity(Weight weight){
+        getCapacity().compareTo(weight);
+    }
+
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;
 
     /*****************************

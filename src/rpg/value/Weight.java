@@ -13,8 +13,9 @@ import be.kuleuven.cs.som.annotate.*;
  * 		  | isValidNumeral(getNumeral())
  * @invar The unit of each weight must be a valid unit.
  * 		  | isValidUnit(getUnit())
- * @author Robbe, Elias
- * @version 1.0
+ * @author Robbe, Elias (verion 1.0)
+ * @author Elias Storme (minor tweaks)
+ * @version 1.1
  */
 @Value
 public class Weight implements Comparable<Weight> {
@@ -73,11 +74,11 @@ public class Weight implements Comparable<Weight> {
 	{
 		this(numeral,Unit.kg);
 	}
-	
+
 	public Weight(int weight, Unit unit){
 		this(new BigDecimal(weight), unit);
 	}
-	
+
 	/**
 	 * Initialize a new weight with value zero and unit kg
 	 */
@@ -114,7 +115,7 @@ public class Weight implements Comparable<Weight> {
 	 * 		   |    && (numeral.scale() ==2) )
 	 */
 	public static boolean isValidNumeral(BigDecimal numeral){
-		return (numeral != null) && (numeral.scale() == 2); 
+		return (numeral != null) && (numeral.scale() == 2);
 	}
 	
 	/**
@@ -288,7 +289,7 @@ public class Weight implements Comparable<Weight> {
 	/**
 	 * Checks whether this weight is equal to the given object.
 	 * 
-	 * @return True iff the given object is effective, if this weight
+	 * @return True if the given object is effective, if this weight
 	 * 		   and the given object belong to the same class. and if this 
 	 * 		   weight and the other object interpreted as a 
 	 * 		   weight have equal numerals and equal units.
@@ -313,9 +314,13 @@ public class Weight implements Comparable<Weight> {
 	 ************************************************/
 	
 	/**
-	 * 
+	 * Adds two weights together and returns a new weight with the total.
+     *
 	 * @param other
-	 * @return
+     *        The weight to be added to the prime weight.
+	 * @return A new weight object with as numeral the sum of the numerals
+     *         of the prime weight and the given weight.
+     *       | return.numeral = this.numeral + other.numeral
 	 */
 	public Weight add(Weight other){
 		BigDecimal total = BigDecimal.ZERO;
@@ -323,15 +328,19 @@ public class Weight implements Comparable<Weight> {
 		total.add(other.toUnit(this.getUnit()).getNumeral());
 		return new Weight(total);
 	}
-	
+
+    /**
+     * Multiplies this weight by a bigdecimal factor.
+     * @param factor
+     *        Bigdecimal factor this weight's numeral is to be multiplied by.
+     * @return A new weight with as numeral the numeral of the prime weight
+     *         multiplied by the given factor.
+     *       | return = this.numeral * factor
+     */
 	public Weight multiply(BigDecimal factor){
 		BigDecimal result = this.getNumeral();
 		result = result.multiply(factor);
 		return new Weight(result, this.getUnit());
-	}
-	
-	public Weight multiply(double factor){
-		return multiply(new BigDecimal(factor));
 	}
 	
 }

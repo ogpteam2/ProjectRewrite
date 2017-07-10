@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_f7iA4GCzEee3wL04T3RKLg" name="RootElement"/>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_f7iA4GCzEee3wL04T3RKLg" name="RootElement">
+  <packagedElement xmi:type="uml:Package" xmi:id="_SaoDoGV0EeeM1cOIRDr2uw" name="rpg">
+    <packagedElement xmi:type="uml:Package" xmi:id="_Tpx-YGV0EeeM1cOIRDr2uw" name="utility">
+      <packagedElement xmi:type="uml:Interface" xmi:id="_WIv7MGV0EeeM1cOIRDr2uw" name="IDGenerator">
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_i1VikGV0EeeM1cOIRDr2uw" name="nextID"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_2xERMGV0EeeM1cOIRDr2uw" name="hasNextID" isQuery="true"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_6l50wGV0EeeM1cOIRDr2uw" name="reset"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_AGvAEGV1EeeM1cOIRDr2uw" name="generateID"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Realization" xmi:id="_LoUM4GV1EeeM1cOIRDr2uw" client="_f7iA4GCzEee3wL04T3RKLg" supplier="_f7iA4GCzEee3wL04T3RKLg"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_CYdLEGV1EeeM1cOIRDr2uw" name="BinomialGenerator"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RmT1UGV1EeeM1cOIRDr2uw" name="FibonacciGenerator"/>
+      <packagedElement xmi:type="uml:Realization" xmi:id="_cjAMYGV1EeeM1cOIRDr2uw" client="_RmT1UGV1EeeM1cOIRDr2uw" supplier="_WIv7MGV0EeeM1cOIRDr2uw"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_fidnIGV1EeeM1cOIRDr2uw" name="WeaponGenerator">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_AiX9wGV2EeeM1cOIRDr2uw" name="weapon" type="_-YC0MGV1EeeM1cOIRDr2uw" association="_AiUTYGV2EeeM1cOIRDr2uw"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Realization" xmi:id="_h-C4wGV1EeeM1cOIRDr2uw" client="_f7iA4GCzEee3wL04T3RKLg" supplier="_WIv7MGV0EeeM1cOIRDr2uw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_1PjlsGV1EeeM1cOIRDr2uw" name="inventory">
+      <packagedElement xmi:type="uml:Class" xmi:id="_5E8i4GV1EeeM1cOIRDr2uw" name="Item" isAbstract="true"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_9AHX8GV1EeeM1cOIRDr2uw" name="Ducat"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_-YC0MGV1EeeM1cOIRDr2uw" name="Weapon"/>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_AiUTYGV2EeeM1cOIRDr2uw" memberEnd="_AiX9wGV2EeeM1cOIRDr2uw _AiboIGV2EeeM1cOIRDr2uw">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AiVhgGV2EeeM1cOIRDr2uw" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AiWIkGV2EeeM1cOIRDr2uw" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_AiboIGV2EeeM1cOIRDr2uw" name="weapongenerator" type="_fidnIGV1EeeM1cOIRDr2uw" association="_AiUTYGV2EeeM1cOIRDr2uw"/>
+  </packagedElement>
+</uml:Model>
