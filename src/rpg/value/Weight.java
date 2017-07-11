@@ -3,6 +3,7 @@ package rpg.value;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.EnumMap;
 
 import be.kuleuven.cs.som.annotate.*;
 
@@ -11,11 +12,17 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar The numeral of each weight must be valid.
  * 		  | isValidNumeral(getNumeral())
+ * @invar The numeral must be rounded to the following decimal places
+ *        in accordance with it's unit:
+ *        kg: 5, g: 2, lbs: 4
+ *        | isValidRounding(getNumeral(), getUnit())
+ * @note This invariant is enforced by rounding at initialisation as each mutator
+ *       returns a newly constructed object with modified values.
  * @invar The unit of each weight must be a valid unit.
  * 		  | isValidUnit(getUnit())
  * @author Robbe, Elias (verion 1.0)
- * @author Elias Storme (minor tweaks)
- * @version 1.1
+ * @author Elias Storme (rework to total programming)
+ * @version 2.0
  */
 @Value
 public class Weight implements Comparable<Weight> {
@@ -31,32 +38,29 @@ public class Weight implements Comparable<Weight> {
 	 * 		  The numeral for this new weight.
 	 * @param unit
 	 * 		  The unit for this new weight.
-	 * @post  The numeral of this new capacity amount is equal to 
-	 * 		  the given numeral rounded (using half down) to a decimal 
-	 * 		  number with 1 fractional digits.
-	 * 		  | let roundedNumeral = numeral.roud(getContextForScale1(numeral))
-	 * 		  | in new.getNumeral().equals(numeral))
-	 * @post The unit for this new weight is the same as the given unit.
-	 * 		 | new.getUnit() == unit
-	 * @throws IllegalArgumentException
-	 *   	   The given numeral is not effective.
-	 *   	   | numeral == null
-	 * @throws IllegalArgumentException
-	 *    	   The given unit is not a valid unit for any weight.
-	 *         | ! isValidUnit()
+     * @post The unit may not contain a null reference. If this is the case, kg
+     *       is set as the unit.
+     *     | if(!isValidUnit(unit)) this.unit = Unit.kg
+     * @post The numeral may not contain a null reference and must be positive. If
+     *       this is not the case, zero is set as the numeral.
+     *     | if(!isValidNumeral(numeral) this.numeral = Bigdecimal.ZERO
+     * @post The numeral has to be rounded to the correct number of decimal places
 	 */
 	@Raw
 	public Weight(BigDecimal numeral, Unit unit)
-		throws IllegalArgumentException
 	{
-		if (numeral == null)
-			throw new IllegalArgumentException("Non-effective numeral");
-		if (! isValidUnit(unit))
-			throw new IllegalArgumentException("Invalid unit");
-		if (numeral.scale() != 1)
-			numeral = numeral.round(getContextForScale2(numeral));
-		this.numeral = numeral;
-		this.unit = unit;
+	    //set unit
+	    if(isValidUnit(unit)) this.unit = unit;
+	    else this.unit = Unit.kg;
+
+	    BigDecimal provisionalNumeral;
+	    //check numeral validity
+		if(isValidNumeral(numeral)) provisionalNumeral = numeral;
+		else provisionalNumeral = BigDecimal.ZERO;
+		//check rounding
+		if(!isValidRounding(provisionalNumeral,unit)) this.numeral =
+                provisionalNumeral.round(getContext());
+		else this.numeral = provisionalNumeral;
 	}
 	
 	/**
@@ -66,35 +70,37 @@ public class Weight implements Comparable<Weight> {
 	 * 		  The numeral for this new weight.
 	 * @effect The new weight is initialized with the given numeral
 	 *         and the unit "kg".
-	 *         | this(numeral, Unit.kg)
+	 *       | this(numeral, Unit.kg)
 	 */
 	@Raw
 	public Weight(BigDecimal numeral)
-			throws IllegalArgumentException
 	{
 		this(numeral,Unit.kg);
 	}
 
-	public Weight(int weight, Unit unit){
-		this(new BigDecimal(weight), unit);
+    /**
+     * Initialise a new weight with given numeral in integer form and the given unit.
+     * @param numeral
+     *        Numeral in integer form.
+     * @param unit
+     *        Unit for this weight.
+     * @effect A new weight is initialised with as numeral the Bigdecimal equivalent of the
+     *         given integer value.
+     *      | this(new Bigdecimal(numeral), unit)
+     */
+	public Weight(int numeral, Unit unit){
+		this(new BigDecimal(numeral), unit);
 	}
 
-	/**
-	 * Initialize a new weight with value zero and unit kg
-	 */
-	public Weight(){
-		this(BigDecimal.ZERO, Unit.kg);
-	}
-	
+    /**
+     * Variable referencing a weight of 0.0 kg
+     */
+    public final static Weight kg_0 =
+            new Weight(BigDecimal.ZERO,Unit.kg);
+
 	/************************************************
 	 * Value
 	 ************************************************/
-	
-	/**
-	 * Variable referencing a weight of 0.0 kg
-	 */
-	public final static Weight kg_0 = 
-			new Weight(BigDecimal.ZERO,Unit.kg);
 	
 	/**
 	 * Return the numeral of this capacity amount.
@@ -103,22 +109,35 @@ public class Weight implements Comparable<Weight> {
 	public BigDecimal getNumeral(){
 		return this.numeral;
 	}
-	
-	/**
-	 * Checks whether the given numeral is a valid numeral for any weight.
-	 * 
-	 * @param numeral
-	 * 		  The numeral to check.
-	 * @return True iff the given numeral is effective and if it has a scale of 2.
-	 * 		   | result ==
-	 * 		   | 	( (numeral != null)
-	 * 		   |    && (numeral.scale() ==2) )
-	 */
-	public static boolean isValidNumeral(BigDecimal numeral){
-		return (numeral != null) && (numeral.scale() == 2);
-	}
-	
-	/**
+
+    /**
+     * Checks if the numeral value of this weight is valid.
+     * @param numeral
+     *        Bigdecimal numeral to be checked.
+     * @return If the numeral is positive and not a null reference, return true
+     *         return numeral != null && numeral >= 0
+     */
+	private boolean isValidNumeral(BigDecimal numeral){
+	    return numeral != null && numeral.signum() != -1;
+    }
+
+    /**
+     * Checks if the given numeral has the correct rounding in accordance
+     * with the unit.
+     * @param numeral
+     *        Numeral of which the rounding is to be checked.
+     * @param unit
+     *        Unit to check the rounding against.
+     * @return Return true if the number of decimal places in the numeral matches the
+     *         rounding specified by the unit.
+     *       | numeral.scale() == unit.getPrecision()
+     *
+     */
+    private boolean isValidRounding(BigDecimal numeral, Unit unit){
+        return numeral.scale() == unit.getPrecision();
+    }
+
+    /**
 	 * A variable that references the numeral of this weight.
 	 */
 	private final BigDecimal numeral;
@@ -153,42 +172,63 @@ public class Weight implements Comparable<Weight> {
 	 * 
 	 * @param unit
 	 *        The unit in which to current weight will be converted.
-	 * @return The resulting weight has the given unit as its unit.
-	 *         | result.getUnit() == unit
-	 * @return The numeral of the resulting weight is equal to the numeral
-	 * 		   of this weight multiplied with the conversion rate from the 
-	 *         unit of this weight to the given unit rounded half down to a
-	 *         scale of 2.
-	 *         | let conversionRate = this.getUnit().toUnit(unit),
-	 *         |     numeralInCurreny = this.getNumeral().multiply(conversionRate)
-	 *         | in result.getNumeral().equals
-	 *         |      (numeralInUnit.round(getContextForScale2(numeralInUnit))
-	 * @throws IllegalArgumentException
-	 * 		   The given unit is not effective
-	 *  	   | unit == null
-	 */       
+	 * @return If the given unit is not effective, convert to kg.
+	 *       | if(!isValidUnit(unit)) return toUnit(Unit.kg)
+	 * @return If the given unit is the same as the unit of the prime object,
+     *         do nothing and just return the prime object.
+     *       | if(unit = getUnit()) return this
+     * @return Else convert the weight to the given unit by multiplying it
+     *         by the conversionrate dictated by the unit enum, then rounding
+     *         for satisfaction of the class invariant.
+     *       | let
+     *       |     conversionRate = this.getUnit().toUnit(unit)
+     *       |     convertedNumeral = this.getNumeral().multiply(conversionRate)
+     *       | in
+     *       |     return new Weight(convertedNumeral, unit)
+     *
+	 */
 	public Weight toUnit(Unit unit)
-		throws IllegalArgumentException
 	{
-		if (unit == null)
-			throw new IllegalArgumentException
-						("Non-effective unit");
+		if(!isValidUnit(unit))
+		    return this.toUnit(Unit.kg);
 		if (this.getUnit() == unit)
 			return this;
 		BigDecimal conversionRate = 
 				this.getUnit().toUnit(unit);
-		BigDecimal numeralInUnit =
+		BigDecimal convertedNumeral =
 				getNumeral().multiply(conversionRate);
-		numeralInUnit =
-				numeralInUnit.round(getContextForScale2(numeralInUnit));
-		return new Weight(numeralInUnit,unit);
+		return new Weight(convertedNumeral,unit);
 	}
 	
 	/**
 	 * Variable referencing the unit of this weight.
 	 */
 	private final Unit unit;
-	
+
+    /************************************************
+     * Rounding & precision
+     ************************************************/
+
+    /**
+     * Retrieves the mathcontext to be used when rounding the numeral.
+     *
+     * @return Mathcontext object determining the way the numeral of the weight class is
+     * rounded and what precision it has.
+     *
+     * The precision is set according to the unit that is being used. As the gram unit is
+     * 1000 times smaller than the kg unit it's rounding has to be done to 3 decimal places less.
+     *
+     * The rounding is done using the half even method, dictating that rounding is
+     * done to the nearest neighbour and the even neighbour if equidistant.
+     */
+    @Immutable
+    private MathContext getContext(){
+        return new MathContext(
+                getUnit().getPrecision(),
+                RoundingMode.HALF_EVEN
+        );
+    }
+
 	/************************************************
 	 * Utility
 	 ************************************************/
@@ -208,84 +248,85 @@ public class Weight implements Comparable<Weight> {
 	 * 		   of the numeral of this weight, followed by
 	 * 		   the textual representation of its unit, separated by a space
 	 * 		   and enclosed in square brackets.
-	 * 	       |result.equals("[" + getNumeral().toString() +
-	 * 		   |		 " " + getUnit().toString() + "]")
+	 * 	     | result.equals("[" + getNumeral().toString() +
+	 * 		 |      " " + getUnit().toString() + "]")
 	 */
 	@Override
 	public String toString(){
 		return "[" + getNumeral().toString() + " " + getUnit().toString() + "]";
 	}
-	
-	/**
-	 * Return a mathematical context to round the given big decimal to 2 
-	 * fractional digits.
-	 * 
-	 * @param value
-	 * 		  The value to compute a mathematical context for.
-	 * @pre The given value must be effective.
-	 * 		| value != null
-	 * @return The precision of the resulting mathematical context is 
-	 * 		   equal to the precision of the given value diminished with its
-	 * 		   scale and incremented by 2.
-	 *        | result.getPrecision() == value.precision()-value.scale()+2
-	 * @return The resulting mathematical context uses HALF_DOWN as its rounding mode.
-	 *         | result.getRoudingMode == RoundingMode.HALF_DOWN
-	 */
-	@Model
-	static MathContext getContextForScale2(BigDecimal value) {
-		assert value != null;
-		return new MathContext(value.precision()-value.scale()+2,
-				RoundingMode.HALF_DOWN);
-	}
-	
+
 	/************************************************
-	 * Logic
+	 * Logical operations
 	 ************************************************/
 
 	/**
-	 * Compare this capacity amount with another weight.
+	 * Compare this weight to another.
 	 * 
 	 * @param other
 	 *        The other weight to compare with this one.
-	 * @return The result is equal to the comparison between this numeral
-	 * 		   and the other numeral.
-	 *         | result == getNumeral().compareTo(other.getNumeral())
-	 * @throws  ClassCastException
-	 *         the other weight is not effective or this weight
-	 *         and the other use different units.
-	 *		   | ( (other == null) || (this.getUnit() != other.getUnit()) )
-	 */
+     * @return Zero if other contains a null reference.
+     *       | if other == null return 0
+	 * @return If the units are the same, the result is equal to the
+     *         comparison between this numeral and the other numeral.
+	 *       | if getUnit() == other.getUnit()
+     *       |    return getNumeral().compareTo(other.getNumeral())
+     * @return If the units are not the same, convert the other weight
+     *         to the unit of the prime object and compare.
+     *       | else
+     *       |    return compareTo(other.toUnit(this.getUnit()))
+     */
 	@Override
 	public int compareTo(Weight other)
-		throws ClassCastException
 	{
-		if (other == null)
-			throw new ClassCastException("Non-effective weight");
-		if (getUnit() != other.getUnit())
-			throw new ClassCastException("Incompatible units");
-		return getNumeral().compareTo(other.getNumeral());
+		if(other == null) return 0;
+		if(getUnit() == other.getUnit())
+		    return getNumeral().compareTo(other.getNumeral());
+		else
+		    return this.compareTo(other.toUnit(this.getUnit()));
 	}
 	
 	/**
-	 * Checks whether this weight has the same value as the other one.
+	 * Checks whether this weight and the other represent the same physical weights.
 	 * 
 	 * @param other
 	 * 		  The other weight to compare this with.
-	 * @return True iff this weight is equal to the other one
-	 *         expressed in the unit of this weight.
-	 *        | result == this.equals(other.toUnit(getUnit()) 
-	 * @throws IllegalArgumentException
-	 * 		   The other capacity amount is not effective.
-	 * 		   | other == null
+	 * @return If other contains a null reference, return false.
+     *       | if other == null return false
+     * @return If the units of both weights are the same, compare the numerals.
+     *       | if this.getUnit() == other.getUnit()
+     *       |    return this.hasSameNumeral(other)
+     * @return Else convert other to the same unit as this, then compare numerals.
+     *       | else
+     *       |    return this.hasSameNumeral(other.toUnit(this.getUnit()))
 	 */
 	public boolean hasSameValue(Weight other)
-		throws IllegalArgumentException
 	{
-		if (other == null)
-			throw new IllegalArgumentException("Non-effective capacity amount");
-		return this.equals(other.toUnit(this.getUnit()));
+        if(other == null) return false;
+        if(this.getUnit() == other.getUnit())
+            return this.hasSameNumeral(other);
+        else
+            return this.hasSameNumeral(other.toUnit(this.getUnit()));
 	}
-	
+
+    /**
+     * Checks whether the numerals of this and other are the same.
+     * @note This operation only compares the numerical values of the weights,
+     *       not the weight it represents.
+     *
+     * @param other
+     *        Other weight to be compared
+     * @pre other may not be a null reference
+     *    | other != null
+     * @pre Both weights have to have the same unit.
+     *    | this.getUnit() == other.getUnit()
+     * @return The comparison between the numerals.
+     *       | return this.getNumeral() == other.getNumeral()
+     */
+	private boolean hasSameNumeral(Weight other){
+        return this.getNumeral().equals(other.getNumeral());
+    }
+
 	/**
 	 * Checks whether this weight is equal to the given object.
 	 * 
@@ -304,43 +345,80 @@ public class Weight implements Comparable<Weight> {
 			return false;
 		if (this.getClass() != other.getClass())
 			return false;
-		Weight otherAmount = (Weight) other;
-		return (this.getNumeral().equals(otherAmount.getNumeral()) &&
-				( this.getUnit() == otherAmount.getUnit()) );
+		Weight otherWeight = (Weight) other;
+		return (hasSameNumeral(otherWeight) &&
+				( this.getUnit() == otherWeight.getUnit()) );
 	}
 	
 	/************************************************
-	 * Arithmetic
+	 * Arithmetic operations
 	 ************************************************/
 	
 	/**
-	 * Adds two weights together and returns a new weight with the total.
+	 * Adds this weight to the given other weight.
      *
 	 * @param other
      *        The weight to be added to the prime weight.
-	 * @return A new weight object with as numeral the sum of the numerals
-     *         of the prime weight and the given weight.
-     *       | return.numeral = this.numeral + other.numeral
+     * @return The prime weight if the other weight is a null reference
+     *       | if other == null return this
+	 * @return If both units are the same, a new weight is returned with as numeral
+     *         the sum of the numerals of the prime weight and the given weight.
+     *       | if this.getUnit() == other.getUnit()
+     *       |    return.numeral = this.numeral + other.numeral
+     * @return Else convert other to the unit of this weight and add them together.
+     *       | return this.add(other.toUnit(this.getUnit()))
 	 */
 	public Weight add(Weight other){
-		BigDecimal total = BigDecimal.ZERO;
-		total.add(this.getNumeral());
-		total.add(other.toUnit(this.getUnit()).getNumeral());
-		return new Weight(total);
+		if(other == null) return this;
+		if(this.getUnit() == other.getUnit())
+		    return this.addNumerals(other);
+		else
+		    return this.addNumerals(other.toUnit(this.getUnit()));
 	}
+
+    /**
+     * Adds the numerals of the prime weight and the given other together.
+     * @param other
+     *        Other weight to be added.
+     * @pre other may not be a null reference
+     * @pre both weights must have the same unit.
+     * @return New weight with as numeral the sum of this and other's numerals.
+     */
+	private Weight addNumerals(Weight other){
+        BigDecimal total = BigDecimal.ZERO;
+        total = total.add(this.getNumeral());
+        total = total.add(other.toUnit(this.getUnit()).getNumeral());
+        return new Weight(total);
+    }
 
     /**
      * Multiplies this weight by a bigdecimal factor.
      * @param factor
      *        Bigdecimal factor this weight's numeral is to be multiplied by.
-     * @return A new weight with as numeral the numeral of the prime weight
-     *         multiplied by the given factor.
-     *       | return = this.numeral * factor
+     * @return If the given factor is a null reference, return a weight of zero with
+     *         the same unit as the prime weight.
+     *       | if factor == null
+     *       |     return new Weight(0, this.getUnit())
+     * @return If the factor is negative, multiply by the absolute value of the factor.
+     *       | if factor < 0
+     *       |     return this.multiply(abs(factor))
+     * @return Else return a new weight with the numeral of the old weight multiplied by
+     *         the given factor, keep the unit as it was.
+     *       | let
+     *       |     newNumeral = this.getNumeral().multiply(factor)
+     *       | then
+     *       |     return new Weight(newNumeral, getUnit())
      */
 	public Weight multiply(BigDecimal factor){
-		BigDecimal result = this.getNumeral();
-		result = result.multiply(factor);
-		return new Weight(result, this.getUnit());
+		if(factor == null) return new Weight(0,this.getUnit());
+		if(factor.signum() != -1){
+            BigDecimal newNumeral = this.getNumeral().multiply(factor);
+            return new Weight(newNumeral, this.getUnit());
+        } else {
+		    return this.multiply(factor.abs());
+        }
 	}
+
+
 	
 }
