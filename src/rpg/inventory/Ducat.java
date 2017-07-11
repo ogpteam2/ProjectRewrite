@@ -1,13 +1,16 @@
 package rpg.inventory;
 
+import rpg.value.Unit;
 import rpg.value.Weight;
+
+import java.math.BigDecimal;
 
 public class Ducat extends Item{
 
-    public static Weight DUCAT_WEIGHT = new Weight()
+    public static Weight DUCAT_WEIGHT = new Weight(50, Unit.g);
 
 	public Ducat(){
-		super(1, -1L);
+		super(1, DUCAT_WEIGHT, -1L);
 		// TODO Auto-generated constructor stub
 	}
 

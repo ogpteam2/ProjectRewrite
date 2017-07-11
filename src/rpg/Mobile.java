@@ -92,7 +92,7 @@ public abstract class Mobile {
      *       | getCapacity().compareTo(weight) == -1
      */
     public boolean exceedsCapacity(Weight weight){
-        getCapacity().compareTo(weight);
+        return getCapacity().compareTo(weight) == -1;
     }
 
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;

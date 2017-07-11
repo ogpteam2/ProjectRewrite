@@ -1,11 +1,12 @@
 package rpg.inventory;
 
 import rpg.Mobile;
+import rpg.value.Weight;
 
 public class Purse extends Container {
 
-	public Purse(int value) {
-		super(value,0L);
+	public Purse(int value, Weight weight) {
+		super(value, weight, 0L);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -22,8 +23,7 @@ public class Purse extends Container {
 	}
 
 	@Override
-	public boolean canHaveAsValue() {
-		// TODO Auto-generated method stub
+	public boolean canHaveAsValue(int value) {
 		return false;
 	}
 

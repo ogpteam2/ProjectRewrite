@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import rpg.InvalidItemException;
+import rpg.value.Weight;
 
 /**
  * A superclass of containers to contain a set of items.
@@ -12,8 +13,8 @@ import rpg.InvalidItemException;
  */
 public abstract class Container extends Item implements Holder{
 
-	public Container(int value, long identifier) {
-		super(value, identifier);
+	public Container(int value, Weight weight, long identifier) {
+		super(value, weight, identifier);
 
 	}
 

@@ -7,16 +7,33 @@ import rpg.value.Weight;
 
 /**
  * A superclass of items for all the items in the game.
+ *
+ * @invar The weight of the items must be valid.
+ *      | isValidWeight(this.weight)
+ *
  * @author elias
  *
  */
 public abstract class Item {
 
+    /**
+     * Creates a new item with the given value, weight and identifier.
+     * @param value
+     * @param weight
+     *        The weight of this item.
+     * @param identifier
+     *
+     * @post The weight of this item must be a valid instance of the
+     *       Weight value class.
+     * @note The value class Weight does all the heavy lifting for this
+     *       postcondition. It is not possible to create a negative weight.
+     *       Checking for a null reference is the only needed check here.
+     */
 	public Item(int value, Weight weight, long identifier){
-		this.weight = weight;
+        this.weight = weight;
 		this.identifier = identifier;
 	}
-	
+
 	/*****************************
 	 * Value
 	 *****************************/
@@ -26,7 +43,7 @@ public abstract class Item {
 	 * an integer amount of ducats.
 	 */
 	private int value = 0;
-	
+
 	/**
 	 * Calculates or returns the total value of this item.
 	 * @return Total value of this item.
@@ -34,14 +51,14 @@ public abstract class Item {
 	 * is abstract and spec remains open.
 	 */
 	public abstract int getValue();
-	
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public abstract boolean canHaveAsValue(int value);
-	
-	
+
+
 	/*****************************
 	 * Weight - total
 	 *****************************/
@@ -51,14 +68,6 @@ public abstract class Item {
 	}
 
 	/**
-	 * Gets the default weight for the item.
-	 * @note To be used when the given weight is not effective.
-	 * @return A default value for the weight of this item. The concrete value
-	 *         is to be determined on the subclass level.
-	 */
-	public abstract Weight getDefaultWeight();
-
-	/**
 	 * Variable for storing the weight of this item.
 	 */
 	private final Weight weight;
@@ -66,9 +75,9 @@ public abstract class Item {
 	/*****************************
 	 * Identifier
 	 *****************************/
-	
+
 	private final long identifier;
-	
+
 	@Basic
 	@Raw
 	public long getIdentifier(){

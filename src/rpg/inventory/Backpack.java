@@ -6,13 +6,14 @@ import be.kuleuven.cs.som.annotate.*;
 import be.kuleuven.cs.som.taglet.*;
 import rpg.Mobile;
 import rpg.utility.BinomialGenerator;
+import rpg.value.Weight;
 
 public class Backpack extends Container {
 
 	private static BinomialGenerator idGen = new BinomialGenerator();
 	
-	public Backpack(int value, long identifier) {
-		super(value, idGen.nextID());
+	public Backpack(int value, Weight weight) {
+		super(value, weight, idGen.nextID());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -28,13 +29,13 @@ public class Backpack extends Container {
 		return 0;
 	}
 
-	@Override
-	public boolean canHaveAsValue() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	/*****************************
+    @Override
+    public boolean canHaveAsValue(int value) {
+        return false;
+    }
+
+
+    /*****************************
 	 * Content
 	 *****************************/
 	
@@ -84,4 +85,16 @@ public class Backpack extends Container {
 	public Mobile getHolder() {
 		return null;
 	}
+
+	/*****************************
+	 * Weight - total
+	 *****************************/
+
+    public Weight getDefaultWeight() {
+        return null;
+    }
+
+    public boolean isValidWeight(Weight weight) {
+        return false;
+    }
 }

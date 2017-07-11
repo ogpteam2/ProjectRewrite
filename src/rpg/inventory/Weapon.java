@@ -1,12 +1,14 @@
 package rpg.inventory;
 
+import rpg.value.Weight;
+
 /**
  * Created by elias on 08/07/17.
  */
 public class Weapon extends Item{
 
     public Weapon(int value, long identifier) {
-        super(value, identifier);
+        super(value, Weight.kg_0, identifier);
     }
 
     @Override
@@ -15,7 +17,8 @@ public class Weapon extends Item{
     }
 
     @Override
-    public boolean canHaveAsValue() {
+    public boolean canHaveAsValue(int value) {
         return false;
     }
+
 }
