@@ -8,8 +8,8 @@ import rpg.value.Weight;
 /**
  * A superclass of items for all the items in the game.
  *
- * @invar The weight of the items must be valid.
- *      | isValidWeight(this.weight)
+ * @invar An item's weight must be a valid instance of the weight class.
+ *      | weight != null
  *
  * @author elias
  *
@@ -30,7 +30,8 @@ public abstract class Item {
      *       Checking for a null reference is the only needed check here.
      */
 	public Item(int value, Weight weight, long identifier){
-        this.weight = weight;
+		if(weight != null) this.weight = weight;
+		else this.weight = Weight.kg_0;
 		this.identifier = identifier;
 	}
 
