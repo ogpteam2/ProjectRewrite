@@ -2,12 +2,13 @@ package rpg.value;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.math.*;
+import java.util.EnumMap;
 
 /**
  * An enumeration introducing different units of mass used to express
  * amounts of mass.
- * 		In its current form, the class only supports the kilogram,
- * 		the gram and the pound(lbs).
+ * @note In its current form, the class only supports the kilogram,
+ * the gram and the pound(lbs).
  * 
  * @version 1.0
  * @author Robbe, Elias
@@ -44,6 +45,8 @@ public enum Unit {
 	 * 
 	 * @param other
 	 * 		  The unit to convert to.
+     * @pre The given unit other must be effective.
+     *    | other != null
 	 * @return The resulting conversion rate is positive.
 	 * 		   | result.signum == 1 
 	 * @return If the unit is the same as the other
@@ -60,24 +63,10 @@ public enum Unit {
 	 * 		   conversion rate from the other unit to this unit.
 	 * 		   | result.equals
 	 * 		   |	(BigDecimal.ONE.divide(other.toUnit(this).unitContext))
-	 * @throws IllegalArgumentException
-	 * 		   The given unit is not effective
-	 * 		   | (other == null)
 	 */
 	public BigDecimal toUnit(Unit other)
-		throws IllegalArgumentException
 	{
-		if (other == null){
-			throw new IllegalArgumentException
-						("Non effective unit");
-		}
-		if (conversionRates[this.ordinal()][other.ordinal()] 
-				== null){
-			conversionRates[this.ordinal()][other.ordinal()] =
-					BigDecimal.ONE.divide(
-							conversionRates[other.ordinal()][this.ordinal()]
-									,unitContext);
-		}
+	    assert other != null;
 		return conversionRates[this.ordinal()][other.ordinal()];
 	}
 	
@@ -99,32 +88,52 @@ public enum Unit {
 				BigDecimal.ONE;
 		conversionRates[kg.ordinal()][g.ordinal()]=
 				new BigDecimal(BigInteger.valueOf(1000),0);
+        conversionRates[g.ordinal()][kg.ordinal()] =
+                BigDecimal.ONE.divide(
+                        conversionRates[kg.ordinal()][g.ordinal()]
+                        ,12, RoundingMode.HALF_EVEN);
 		conversionRates[kg.ordinal()][lbs.ordinal()]=
 				new BigDecimal("220462262185").movePointLeft(11);
+        conversionRates[lbs.ordinal()][kg.ordinal()] =
+                BigDecimal.ONE.divide(
+                        conversionRates[kg.ordinal()][lbs.ordinal()]
+                        ,12, RoundingMode.HALF_EVEN);
 		conversionRates[g.ordinal()][g.ordinal()]=
 				BigDecimal.ONE;
 		conversionRates[g.ordinal()][lbs.ordinal()]=
 				new BigDecimal("220462262").movePointLeft(11);
 		conversionRates[lbs.ordinal()][lbs.ordinal()]=
-				BigDecimal.ONE;	
-	}
-	
-	/**
-	 * Variable referencing the mathematical context used 
-	 * in unit arithmetic.
-	 * 
-	 * @return the unit context has a precision of 12 digits.
-	 * 		   | currencyContext.getPrecision() == 12
-	 * @return The unit context uses rounding mode HALF_DOWN
-	 * 		   | unitContext.getRoundingMode() ==
-	 * 		   | RoundingMode.HALF_DOWN
-	 */
-	public static final MathContext unitContext = 
-			new MathContext(12,RoundingMode.HALF_DOWN);
+				BigDecimal.ONE;
+        conversionRates[lbs.ordinal()][g.ordinal()] =
+                BigDecimal.ONE.divide(
+                        conversionRates[g.ordinal()][lbs.ordinal()]
+                        ,12, RoundingMode.HALF_EVEN);
+    }
 	
 	/**
 	 * A variable storing the unit of this unit.
 	 */
 	private final String unit;
-	
+
+    /************************************************
+     * Precision
+     ************************************************/
+
+    /**
+     * Gets the decimal precision to round a weight with this unit with.
+     */
+    public int getPrecision(){
+        return unitPrecisionMap.get(this);
+    }
+
+    /**
+     * Map storing what precisions to use per unit.
+     * The unit enum is mapped to an integer indicating what precision to use.
+     */
+    private static final EnumMap<Unit,Integer> unitPrecisionMap = new EnumMap<Unit,Integer>(Unit.class);
+    static{
+        unitPrecisionMap.put(Unit.kg,6);
+        unitPrecisionMap.put(Unit.g,3);
+        unitPrecisionMap.put(Unit.lbs,5);
+    }
 }
