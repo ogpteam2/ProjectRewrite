@@ -45,6 +45,7 @@ public class Weight implements Comparable<Weight> {
      *       this is not the case, zero is set as the numeral.
      *     | if(!isValidNumeral(numeral) this.numeral = Bigdecimal.ZERO
      * @post The numeral has to be rounded to the correct number of decimal places
+     *     | isValidRounding(this.numeral)
 	 */
 	@Raw
 	public Weight(BigDecimal numeral, Unit unit)
@@ -58,8 +59,8 @@ public class Weight implements Comparable<Weight> {
 		if(isValidNumeral(numeral)) provisionalNumeral = numeral;
 		else provisionalNumeral = BigDecimal.ZERO;
 		//check rounding
-		if(!isValidRounding(provisionalNumeral,unit)) this.numeral =
-                provisionalNumeral.round(getContext());
+		if(!isValidRounding(provisionalNumeral,getUnit())) this.numeral =
+                provisionalNumeral.round(getContext()).stripTrailingZeros();
 		else this.numeral = provisionalNumeral;
 	}
 	
@@ -117,7 +118,7 @@ public class Weight implements Comparable<Weight> {
      * @return If the numeral is positive and not a null reference, return true
      *         return numeral != null && numeral >= 0
      */
-	private boolean isValidNumeral(BigDecimal numeral){
+	private static boolean isValidNumeral(BigDecimal numeral){
 	    return numeral != null && numeral.signum() != -1;
     }
 
@@ -133,7 +134,7 @@ public class Weight implements Comparable<Weight> {
      *       | numeral.scale() == unit.getPrecision()
      *
      */
-    private boolean isValidRounding(BigDecimal numeral, Unit unit){
+    private static boolean isValidRounding(BigDecimal numeral, Unit unit){
         return numeral.scale() == unit.getPrecision();
     }
 
@@ -222,7 +223,7 @@ public class Weight implements Comparable<Weight> {
      * done to the nearest neighbour and the even neighbour if equidistant.
      */
     @Immutable
-    private MathContext getContext(){
+    protected MathContext getContext(){
         return new MathContext(
                 getUnit().getPrecision(),
                 RoundingMode.HALF_EVEN
