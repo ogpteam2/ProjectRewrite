@@ -23,10 +23,7 @@ public class UnitTest {
 		lbsTolbs = BigDecimal.ONE;
 		kgTog = new BigDecimal(BigInteger.valueOf(1000),0);
 		kgTolbs = new BigDecimal("220462262185").movePointLeft(11);
-		gTolbs = new BigDecimal("220462262").movePointLeft(11);	
-		gTokg = BigDecimal.ONE.divide(kgTog,Unit.unitContext);
-		lbsTokg = BigDecimal.ONE.divide(kgTolbs,Unit.unitContext);
-		lbsTog = BigDecimal.ONE.divide(gTolbs,Unit.unitContext);
+		gTolbs = new BigDecimal("220462262").movePointLeft(11);
 	}
 	
 	
