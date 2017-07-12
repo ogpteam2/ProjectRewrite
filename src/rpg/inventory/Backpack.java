@@ -3,9 +3,8 @@ package rpg.inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import be.kuleuven.cs.som.annotate.*;
-import be.kuleuven.cs.som.taglet.*;
 import rpg.Mobile;
-import rpg.utility.BinomialGenerator;
+import rpg.IDGeneration.BinomialGenerator;
 import rpg.value.Weight;
 
 public class Backpack extends Container {

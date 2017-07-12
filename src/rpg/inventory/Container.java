@@ -18,8 +18,8 @@ import rpg.value.Weight;
  */
 public abstract class Container extends Item implements Holder{
 
-	public Container(int value, Weight weight, long identifier, Weight capacity) {
-		super(value, weight, identifier);
+	public Container(int value, Weight weight, Weight capacity) {
+		super(value, weight);
 
 	}
 

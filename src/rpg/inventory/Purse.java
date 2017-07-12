@@ -1,14 +1,58 @@
 package rpg.inventory;
 
+import rpg.IDGeneration.IDGenerator;
 import rpg.Mobile;
-import rpg.utility.FibonacciGenerator;
+import rpg.IDGeneration.FibonacciGenerator;
 import rpg.value.Weight;
+import be.kuleuven.cs.som.taglet.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Stack;
 
 public class Purse extends Container {
 
-    public Purse(int value, Weight weight) {
-        super(value, weight, idGen.nextID());
-        // TODO Auto-generated constructor stub
+    /**
+     * Initialises a new purse with the given value, weight and capacity, then
+     * adds the given ducats to contents.
+     * @param value
+     *        Value of the purse itself.
+     * @param weight
+     *        Weight of this purse itself.
+     * @param capacity
+     *        Capacity of this purse expressed in terms of weight.
+     * @param ducats
+     *        Series of ducat objects to be added to the purse
+     *        after initialisation.
+     * @effect An empty purse is initialised using the less extended constructor.
+     *         @see Purse#Purse(int, Weight, Weight)
+     *       | this(value, weight, capacity)
+     * @effect All given ducats are added to the contents of the purse.
+     *       | for each ducat in ducats:
+     *       |    addToContent(ducat)
+     */
+    public Purse(int value, Weight weight, Weight capacity, Ducat... ducats){
+        this(value, weight, capacity);
+        content.addAll(Arrays.asList(ducats));
+    }
+
+    /**
+     * Initialises a new, empty purse with the given value, weight and capacity.
+     *
+     * @param value
+     *        Value of the purse itself.
+     * @param weight
+     *        Weight of this purse itself.
+     * @param capacity
+     *        Capacity of this purse expressed in terms of weight.
+     * @effect Uses the superclass constructor to set value, weight and capacity.
+     *         @see Container#Container(int, Weight, Weight)
+     *       | super(value, weight, capacity)
+     *
+     */
+    public Purse(int value, Weight weight, Weight capacity) {
+        super(value, weight, capacity);
+        this.content = new Stack<>();
     }
 
     @Override
@@ -33,21 +77,48 @@ public class Purse extends Container {
         return null;
     }
 
+    /*****************************
+     * Content
+     *****************************/
+
     /**
      * Drops all the ducats held within this purse.
      * @effect Every ducat in the content of this purse are dropped.
-     *       | for each ducat in content
-     *       |      drop(ducat)
+     *         As ducats have no knowledge of their parent, this is equivalent
+     *         to reinitialising the content Stack.
+     *       | content = new Stack&lt;Ducat&gt;
      */
     private void dropAllContent(){
-
+        content = new Stack<>();
     }
+
+    /**
+     * Drops one ducat on the ground.
+     * @effect One ducat is removed from the contents of this purse.
+     *       | content.pop()
+     */
+    private void drop(){
+        content.pop();
+    }
+
+    /**
+     * Data structure for storing the contents of this purse.
+     * @note The stack data structure was chosen for ease of use. As all ducats
+     * are identical, there is no need to get to a specific one. However, removing
+     * one ducat gets significantly easier when using a stack.
+     */
+    private Stack<Ducat> content = null;
 
     /*****************************
      * Identifier
      *****************************/
 
     private static FibonacciGenerator idGen = new FibonacciGenerator();
+
+    @Override
+    IDGenerator getIDGenerator() {
+        return idGen;
+    }
 
     /*****************************
      * Capacity
