@@ -13,9 +13,14 @@ import be.kuleuven.cs.som.annotate.Raw;
  *
  */
 public class BinomialGenerator implements IDGenerator {
-	
+
+    //TODO rework method names and documentation
+
 	/**
-	 * Array storing the current row 
+	 * Arraylist storing a row of Pascal's pyramid.
+	 * On the one hand this row is used to calculate a binomial coëfficient
+     * by summing the row.
+     * On the other hand it is used to calculate the next row in the pyramid.
 	 */
 	private ArrayList<Long> pyramidRow;
 	
@@ -27,20 +32,24 @@ public class BinomialGenerator implements IDGenerator {
 	 * the current row of the triangle of Pascal.
 	 */
 	private int currentRowNum;
-	
-	/**
-	 * An iterator that calculates sequential binomial coefficients. These can be calculated as specified
-	 * by the assignment with factorials. However, factorials generate insanely large
-	 * 
-	 * @post Makes a new BinomialGenerator.
-	 * 		 | reset()
-	 */
+
+    /**
+     * Creates a new Binomialgenerator.
+     * @effect Uses the reset method to initialise all values to their
+     *         initial state.
+     *       | reset()
+     */
 	public BinomialGenerator(){
 		reset();
 	}
 	
 	/**
-	 * Generates the next ID.
+	 * Generates an ID.
+     * @effect If there is no sequential next ID, reset the generator.
+     *       | if !hasNextID()
+     *       |      reset()
+     * @return The next sequential ID
+     *       | return nextID()
 	 */
 	public long generateID(){
 		if(!hasNextID()){
@@ -50,32 +59,25 @@ public class BinomialGenerator implements IDGenerator {
 	}
 	
 	/**
-	 * Binomial coefficients can be calculated endlessly. However, the java long type has a finite size.
-	 * When the value of a long grows larger than 2^63 the sign indication bit is flipped, so the value
-	 * becomes negative. As values should only be positive, sign is an indication for overflow.
+	 * Checks if a next ID can be generated.
 	 * 
-	 * @return True if the value has not overflowed into the sign indication bit.
-	 * 			| if(next < 0) return false
-	 * 			| else return true
+	 * @return True if the next id would overflow the long variable it is contained in.
+     *         This is done by checking if the next calculated id is negative, as over-
+     *         flowing a long in java causes it to flip the sign bit.
+     *       | return calculateRowSum(pyramidRow) >= 0
 	 */
-	@Override
 	public boolean hasNextID() {
-		long nextValue = calculateRowSum(pyramidRow);
-		if(nextValue < 0) return false;
-		else return true;
+        return calculateRowSum(pyramidRow) >= 0;
 	}
 
 	/**
-	 * Advances the iterator. First calculates the next row in the pyramid. Then calculates the sum of 
-	 * @Effect attribute current is updated with the next binomial coefficient
-	 * @Effect the pyramidRow is replaced by the value that will be used to calculate the binomialcoefficient of the following iteration
-	 * @Effect Advances the row number by one.
-	 * @return the next binomial coefficient
+	 * Calculates the next sequential ID.
+     * @effect pyramidrow is replaced by the next row.
+     *       | setPyramidRow(calculateNextRow())
+     * @effect The rownumber is advan
 	 */
-	
-	@Override
-	public long nextID() {
-		replaceRow(calculateNextRow());
+    private void nextID() {
+		setPyramidRow(calculateNextRow());
 		advanceCurrentRowNum();
 		long nextLong = calculateRowSum(pyramidRow);
 		setCurrentValue(nextLong);
@@ -88,7 +90,7 @@ public class BinomialGenerator implements IDGenerator {
 	 * @effect the pyramid row number is set to 1
 	 */
 	public void reset(){
-		replaceRow(new ArrayList<Long>());
+		setPyramidRow(new ArrayList<Long>());
 		setCurrentRowNum(1);
 	}
 	
@@ -108,7 +110,7 @@ public class BinomialGenerator implements IDGenerator {
 	 * 		  The pyramidrow the current pyramidrow will be replaced with.
 	 */
 	@Raw
-	private void replaceRow(ArrayList<Long> nextRow){
+	private void setPyramidRow(ArrayList<Long> nextRow){
 		this.pyramidRow = nextRow;
 	}
 	

@@ -1,6 +1,7 @@
 package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import rpg.value.Unit;
 import rpg.value.Weight;
@@ -11,7 +12,8 @@ import rpg.value.Weight;
  * @invar An item's weight must be a valid instance of the weight class.
  *      | weight != null
  *
- * @author elias
+ * @author Elias Storme
+ * @version 1.0
  *
  */
 public abstract class Item {
@@ -25,8 +27,9 @@ public abstract class Item {
      *
      * @post The weight of this item must be a valid instance of the
      *       Weight value class.
-     * @note The value class Weight does all the heavy lifting for this
-     *       postcondition. It is not possible to create a negative weight.
+     * @note The value class Weight does all the heavy lifting for the requirements
+	 * 	     of the weight attribute. It is not possible to create an instance of weight
+     * 	     with a negative numeral.
      *       Checking for a null reference is the only needed check here.
      */
 	public Item(int value, Weight weight, long identifier){
@@ -64,6 +67,10 @@ public abstract class Item {
 	 * Weight - total
 	 *****************************/
 
+    /**
+     * Retrieves the weight object representing this object's own weight.
+     */
+    @Basic @Raw @Immutable
 	public Weight getWeight(){
 		return this.weight;
 	}
@@ -79,8 +86,10 @@ public abstract class Item {
 
 	private final long identifier;
 
-	@Basic
-	@Raw
+    /**
+     * Retrieves the identifier for this object.
+     */
+	@Basic @Raw @Immutable
 	public long getIdentifier(){
 		return this.identifier;
 	}
