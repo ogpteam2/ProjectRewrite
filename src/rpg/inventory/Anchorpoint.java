@@ -15,7 +15,7 @@ import rpg.inventory.Container;
  *        anchorpoint type.
  *      | canHaveAsItem(this.content)
  */
-public class Anchorpoint implements Holder {
+public class Anchorpoint implements Parent {
 
 
     /**

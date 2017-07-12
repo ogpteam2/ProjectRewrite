@@ -45,7 +45,7 @@ public abstract class Item {
 	 * Variable storing the value of this item. The value is expressed as
 	 * an integer amount of ducats.
 	 */
-	private int value = 0;
+	protected int value = 0;
 
 	/**
 	 * Calculates or returns the total value of this item.
@@ -54,12 +54,6 @@ public abstract class Item {
 	 * is abstract and spec remains open.
 	 */
 	public abstract int getValue();
-
-	/**
-	 *
-	 * @return
-	 */
-	public abstract boolean canHaveAsValue(int value);
 
 
 	/*****************************

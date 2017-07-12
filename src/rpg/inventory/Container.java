@@ -1,9 +1,7 @@
 package rpg.inventory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import rpg.InvalidItemException;
+import rpg.Mobile;
 import rpg.value.Weight;
 
 /**
@@ -16,7 +14,7 @@ import rpg.value.Weight;
  * @author elias
  *
  */
-public abstract class Container extends Item implements Holder{
+public abstract class Container extends Item implements Parent{
 
 	public Container(int value, Weight weight, Weight capacity) {
 		super(value, weight);
@@ -27,15 +25,6 @@ public abstract class Container extends Item implements Holder{
 	 * Content - defensive
 	 *****************************/
 
-	/**
-	 * Checks whether the prime object can contain the given item
-	 * @param item
-	 * 		  Item to check.
-	 * @return Conditions to be specified in subclasses.
-	 */
-	public abstract boolean canHaveAsContent(Item item);
-	
-	
 	/**
 	 * Adds the given item to the prime object.
 	 * @param item
@@ -65,9 +54,19 @@ public abstract class Container extends Item implements Holder{
 
     /**
      * Calculates the weight of all the items this container contains.
-     * @return A summation of the weights contained in this container.
+     * @return A summation of the weights of the items contained.
      */
     public abstract Weight getWeightOfContents();
+
+    /**
+     * Calculates the total weight of the container.
+     *
+     * @return The weight of the container plus the weight of the contents.
+     *       | return getWeight + getWeightOfContents()
+     */
+    public Weight getTotalWeight(){
+        return getWeight().add(getWeightOfContents());
+    }
 	
 	/*****************************
 	 * Capacity
@@ -118,5 +117,28 @@ public abstract class Container extends Item implements Holder{
      * items contained collectively may weigh.
      */
 	protected Weight capacity = null;
-	
+
+    /*****************************
+     * Holder
+     *****************************/
+
+    /**
+     * Retrieves the holder of this container.
+     * @return If the parent of this container is null, it means the container
+     *         is lying on the ground. As a result it cannot have a holder so
+     *         a null reference must be returned.
+     *       | if parent == null return null
+     *         If the container does have a parent, the parent is queried for it's
+     *         holder.
+     *       | else return parent.getHolder()
+     */
+    public Mobile getHolder(){
+        if (parent == null){
+            return null;
+        } else {
+            return parent.getHolder();
+        }
+    }
+
+    private Parent parent;
 }
