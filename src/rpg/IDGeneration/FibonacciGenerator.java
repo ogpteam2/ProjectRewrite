@@ -1,4 +1,4 @@
-package rpg.utility;
+package rpg.IDGeneration;
 
 public class FibonacciGenerator implements IDGenerator {
 

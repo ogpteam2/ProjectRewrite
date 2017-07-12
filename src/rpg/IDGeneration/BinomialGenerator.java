@@ -1,4 +1,4 @@
-package rpg.utility;
+package rpg.IDGeneration;
 
 
 import java.util.ArrayList;

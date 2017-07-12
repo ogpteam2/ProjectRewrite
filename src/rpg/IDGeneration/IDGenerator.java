@@ -1,4 +1,4 @@
-package rpg.utility;
+package rpg.IDGeneration;
 
 /**
  * An interface implementing IDGenerators for the items.

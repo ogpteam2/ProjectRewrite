@@ -1,4 +1,4 @@
-package rpg.utility;
+package rpg.IDGeneration;
 
 import static org.junit.Assert.*;
 
