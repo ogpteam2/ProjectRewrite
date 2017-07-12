@@ -388,8 +388,8 @@ public class Weight implements Comparable<Weight> {
 	private Weight addNumerals(Weight other){
         BigDecimal total = BigDecimal.ZERO;
         total = total.add(this.getNumeral());
-        total = total.add(other.toUnit(this.getUnit()).getNumeral());
-        return new Weight(total);
+        total = total.add(other.getNumeral());
+        return new Weight(total, this.getUnit());
     }
 
     /**
@@ -420,6 +420,16 @@ public class Weight implements Comparable<Weight> {
         }
 	}
 
-
+    /**
+     * Multiplies this weight by an integer factor.
+      * @param factor
+     *         Integer to multiply the weight by.
+     * @return Converts the integer to a BigDecimal, then calculates the
+     *         multiple with method multiply(BigDecimal)
+     *       | return multiply(new BigDecimal(factor))
+     */
+    public Weight multiply(int factor){
+        return multiply(new BigDecimal(factor));
+    }
 	
 }

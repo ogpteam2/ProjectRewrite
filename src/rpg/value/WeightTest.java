@@ -128,11 +128,71 @@ public class WeightTest {
     }
 
     @Test
-    public void add() {
+    public void compareToInvalid(){
+        assertEquals(0, standardWeight.compareTo(null));
     }
 
     @Test
-    public void multiply() {
+    public void compareToSameUnitsLarger(){
+        Weight other = new Weight(new BigDecimal(.5), Unit.kg);
+        assertEquals(1, standardWeight.compareTo(other));
     }
 
+    @Test
+    public void compareToSameUnitsSmaller() {
+        Weight other = new Weight(2, Unit.kg);
+        assertEquals(-1, standardWeight.compareTo(other));
+    }
+
+    @Test
+    public void compareToSameUnitsEqual() {
+        assertEquals(0, standardWeight.compareTo(standardWeight));
+    }
+
+    @Test
+    public void compareToOtherUnits(){
+        assertEquals(0, standardWeight.compareTo(nonStandardUnitWeight));
+    }
+
+    @Test
+    public void addNullReference(){
+        assertEquals(standardWeight, standardWeight.add(null));
+    }
+
+    @Test
+    public void addSameUnits(){
+        Weight sum = new Weight(2, kg);
+        assertEquals(sum, standardWeight.add(standardWeight));
+    }
+
+    @Test
+    public void addDifferentUnits(){
+        Weight sum = new Weight(2000, Unit.g);
+        assertEquals(sum, nonStandardUnitWeight.add(standardWeight));
+    }
+
+    @Test
+    public void multiplyNull() {
+        assertEquals(Weight.kg_0, standardWeight.multiply(null));
+    }
+
+    @Test
+    public void multiplyNegativeFactor() {
+        assertEquals(standardWeight.multiply(2),
+                standardWeight.multiply(-2));
+    }
+
+    @Test
+    public void multiplyWithInteger(){
+        int factor = 2;
+        assertEquals(standardWeight.multiply(new BigDecimal(factor)),
+                standardWeight.multiply(factor));
+    }
+
+    @Test
+    public void multiplyValid(){
+        Weight expectedMultiple = new Weight(2, kg);
+        assertEquals(expectedMultiple,
+                standardWeight.multiply(new BigDecimal(2)));
+    }
 }
