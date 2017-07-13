@@ -1,8 +1,10 @@
 package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Raw;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.IDGeneration.BinomialGenerator;
 import rpg.IDGeneration.IDGenerator;
+import rpg.InvalidItemException;
 import rpg.value.Weight;
 
 import java.util.ArrayList;
@@ -10,14 +12,11 @@ import java.util.HashMap;
 
 public class Backpack extends Container implements Parent {
 
-    private static BinomialGenerator idGen = new BinomialGenerator();
-
-    public Backpack(int value, Weight weight) {
-        super(value, weight, idGen.nextID());
+    public Backpack(int value, Weight weight, Weight capacity) {
+        super(value, weight, capacity);
         // TODO Auto-generated constructor stub
     }
 
-    @Override
     public boolean canHaveAsContent(Item item) {
         // TODO Auto-generated method stub
         return false;
@@ -29,11 +28,16 @@ public class Backpack extends Container implements Parent {
         return 0;
     }
 
+    /*****************************
+     * Identification
+     *****************************/
+
     @Override
     IDGenerator getIDGenerator() {
-        return null;
+        return idGen;
     }
 
+    private static BinomialGenerator idGen = new BinomialGenerator();
 
     /*****************************
      * Content
@@ -67,6 +71,14 @@ public class Backpack extends Container implements Parent {
      */
     @Raw
     private void removeItem(Item item) {
+
+    }
+
+    public void addItem(Item item) throws InvalidItemException{
+
+    }
+
+    public void dropItem(Item item) throws InvalidItemException{
 
     }
 

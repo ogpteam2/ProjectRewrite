@@ -1,5 +1,7 @@
 package rpg.inventory;
 
+import rpg.IDGeneration.IDGenerator;
+import rpg.IDGeneration.WeaponIDGenerator;
 import rpg.Mobile;
 import rpg.value.Weight;
 
@@ -9,18 +11,27 @@ import rpg.value.Weight;
 public class Weapon extends Item {
 
     public Weapon(int value, long identifier) {
-        super(value, Weight.kg_0, identifier);
+        super(value, Weight.kg_0);
     }
 
-    @Override
     public int getValue() {
         return 0;
     }
 
-    @Override
     public boolean canHaveAsValue(int value) {
         return false;
     }
+
+    /*****************************
+     * Identification
+     *****************************/
+
+    @Override
+    IDGenerator getIDGenerator() {
+        return idGen;
+    }
+
+    private static WeaponIDGenerator idGen = new WeaponIDGenerator();
 
     /*****************************
      * Holder

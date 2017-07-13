@@ -48,6 +48,10 @@ public class Anchorpoint implements Parent {
      * Type
      *****************************/
 
+    /**
+     * Getter for the type of this anchorpoint.
+     * @return An enum type depicting what type this anchorpoint is.
+     */
     @Basic
     public AnchorType getType() {
         return type;
@@ -101,7 +105,7 @@ public class Anchorpoint implements Parent {
      * | item.getParent() == null
      * @post The anchorpoint has a null refrence
      */
-    public void dropItem() throws InvalidItemException {
+    public void dropItem(Item item) throws InvalidItemException {
         if (!containsItem()) throw new InvalidItemException("Anchorpoint does not contain an item!");
         else {
 

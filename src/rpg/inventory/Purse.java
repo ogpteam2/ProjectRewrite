@@ -2,6 +2,7 @@ package rpg.inventory;
 
 import rpg.IDGeneration.FibonacciGenerator;
 import rpg.IDGeneration.IDGenerator;
+import rpg.InvalidItemException;
 import rpg.Mobile;
 import rpg.value.Weight;
 
@@ -85,8 +86,8 @@ public class Purse extends Container {
      * @effect One ducat is removed from the contents of this purse.
      * | content.pop()
      */
-    private void drop() {
-        content.pop();
+    private Ducat drop() {
+        return content.pop();
     }
 
     /**
@@ -139,13 +140,6 @@ public class Purse extends Container {
         return content.size();
     }
 
-
-    @Override
-    public Mobile getHolder() {
-        return null;
-    }
-
-
     /*****************************
      * 6.5: Capacity
      *****************************/
@@ -162,18 +156,32 @@ public class Purse extends Container {
      * are dropped on the ground. The purse is also dropped on the ground.
      * | if parent instanceof Anchorpoint
      * |     dropAllContent()
-     * |     parent.drop(this)
+     * |     parent.dropItem(this)
      * @effect If the purse's parent is a Backpack, try to add all the ducats to the
      * contents of the backpack. If there is no room in the backpack, drop the
      * ducat on the ground. The purse is also dropped on the ground.
      * | if parent instanceof Backpack
-     * |     for each ducat in content
-     * |         drop(ducat)
-     * |         try parent.addToContent(ducat)
+     * |     for i < content.size
+     * |         try parent.addItem(drop())
      * |     parent.drop(this)
+     * @note If trying to add a ducat to the backpack fails, this automatically drops
+     * it to the ground because the reference to it has already been removed from
+     * the content stack of the purse.
      */
     private void tear() {
-
+        if (getParent() == null) dropAllContent();
+        if (getParent() instanceof Anchorpoint) {
+            dropAllContent();
+            getParent().dropItem(this);
+        } else {
+            for (int i = 0; i < getContent().size(); i++) {
+                try{
+                    getParent().addItem(this.drop());
+                } catch (InvalidItemException e){
+                    //nothing has to be done, reference to ducat already removed.
+                }
+            }
+        }
     }
 
     /**

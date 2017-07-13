@@ -16,7 +16,7 @@ public interface Parent {
      */
     Mobile getHolder();
 
-    void addToContent(Item item) throws InvalidItemException;
+    void addItem(Item item) throws InvalidItemException;
 
-    void removeFromContent(Item item) throws InvalidItemException;
+    void dropItem(Item item) throws InvalidItemException;
 }
