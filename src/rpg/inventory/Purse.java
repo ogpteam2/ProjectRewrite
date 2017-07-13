@@ -1,8 +1,8 @@
 package rpg.inventory;
 
+import rpg.IDGeneration.FibonacciGenerator;
 import rpg.IDGeneration.IDGenerator;
 import rpg.Mobile;
-import rpg.IDGeneration.FibonacciGenerator;
 import rpg.value.Weight;
 
 import java.util.Arrays;
@@ -92,9 +92,10 @@ public class Purse extends Container {
     /**
      * Retrieves the content stack for this purse. Private because content should not
      * be manipulated directly.
+     *
      * @return
      */
-    private Stack<Ducat> getContent(){
+    private Stack<Ducat> getContent() {
         return this.content;
     }
 
@@ -113,10 +114,11 @@ public class Purse extends Container {
 
     /**
      * Calculates the weight of all the items this container contains.
+     *
      * @return All ducats have the same weight so the total weight is equal
-     *         to the weight of one ducat multiplied by the amount of ducats.
+     * to the weight of one ducat multiplied by the amount of ducats.
      */
-    public Weight getWeightOfContents(){
+    public Weight getWeightOfContents() {
         return Ducat.DUCAT_WEIGHT.multiply(getContent().size());
     }
 

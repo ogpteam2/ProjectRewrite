@@ -11,13 +11,9 @@ import java.util.EnumSet;
 public class Monster extends Mobile {
 
     /**
-     *
-     * @param anchorPoints
-     *        An enumset of the AnchorType enum specifying which
-     *        types of anchorpoints this monster has.
-     *
+     * @param anchorPoints An enumset of the AnchorType enum specifying which
+     *                     types of anchorpoints this monster has.
      * @post
-     *
      */
     public Monster(EnumSet<AnchorType> anchorPoints) {
         super(anchorPoints);

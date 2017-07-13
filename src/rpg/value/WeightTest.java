@@ -6,7 +6,8 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by elias on 11/07/2017.
@@ -32,48 +33,48 @@ public class WeightTest {
 
     //Constructor with valid nonstandard values.
     @Test
-    public void constructorValid(){
-        testWeight = new Weight(one,Unit.g);
+    public void constructorValid() {
+        testWeight = new Weight(one, Unit.g);
         assertTrue(
                 testWeight.getNumeral().equals(one)
-                && testWeight.getUnit().equals(Unit.g)
-                );
+                        && testWeight.getUnit().equals(Unit.g)
+        );
     }
 
     @Test
-    public void constructorInvalidUnit(){
-        testWeight = new Weight(one,null);
-        assertEquals(testWeight.getUnit(),kg);
+    public void constructorInvalidUnit() {
+        testWeight = new Weight(one, null);
+        assertEquals(testWeight.getUnit(), kg);
     }
 
     @Test
-    public void constructorNullNumeral(){
+    public void constructorNullNumeral() {
         testWeight = new Weight(null);
         assertEquals(testWeight.getNumeral(), BigDecimal.ZERO);
     }
 
     @Test
-    public void constructorNegativeNumeral(){
+    public void constructorNegativeNumeral() {
         testWeight = new Weight(new BigDecimal(-1));
         assertEquals(testWeight.getNumeral(), BigDecimal.ZERO);
     }
 
     @Test
-    public void constructorKilogramRounding(){
+    public void constructorKilogramRounding() {
         testWeight = new Weight(decimalNumeral);
         MathContext c = testWeight.getContext();
         assertEquals(testWeight.getNumeral().round(c), decimalNumeral.round(c));
     }
 
     @Test
-    public void constructorGramRounding(){
+    public void constructorGramRounding() {
         testWeight = new Weight(decimalNumeral, Unit.g);
         MathContext c = testWeight.getContext();
         assertEquals(testWeight.getNumeral().round(c), decimalNumeral.round(c));
     }
 
     @Test
-    public void constructorPoundRounding(){
+    public void constructorPoundRounding() {
         testWeight = new Weight(decimalNumeral, Unit.lbs);
         MathContext c = testWeight.getContext();
         assertEquals(testWeight.getNumeral().round(c), decimalNumeral.round(c));
@@ -82,13 +83,13 @@ public class WeightTest {
     @Test
     public void toUnitSameUnit() {
         Weight convertedWeight = nonStandardUnitWeight.toUnit(Unit.g);
-        assertEquals(convertedWeight,nonStandardUnitWeight);
+        assertEquals(convertedWeight, nonStandardUnitWeight);
     }
 
     @Test
     public void toUnitInvalidUnit() {
         Weight convertedWeight = nonStandardUnitWeight.toUnit(null);
-        assertEquals(standardWeight,convertedWeight);
+        assertEquals(standardWeight, convertedWeight);
     }
 
     @Test
@@ -128,12 +129,12 @@ public class WeightTest {
     }
 
     @Test
-    public void compareToInvalid(){
+    public void compareToInvalid() {
         assertEquals(0, standardWeight.compareTo(null));
     }
 
     @Test
-    public void compareToSameUnitsLarger(){
+    public void compareToSameUnitsLarger() {
         Weight other = new Weight(new BigDecimal(.5), Unit.kg);
         assertEquals(1, standardWeight.compareTo(other));
     }
@@ -150,23 +151,23 @@ public class WeightTest {
     }
 
     @Test
-    public void compareToOtherUnits(){
+    public void compareToOtherUnits() {
         assertEquals(0, standardWeight.compareTo(nonStandardUnitWeight));
     }
 
     @Test
-    public void addNullReference(){
+    public void addNullReference() {
         assertEquals(standardWeight, standardWeight.add(null));
     }
 
     @Test
-    public void addSameUnits(){
+    public void addSameUnits() {
         Weight sum = new Weight(2, kg);
         assertEquals(sum, standardWeight.add(standardWeight));
     }
 
     @Test
-    public void addDifferentUnits(){
+    public void addDifferentUnits() {
         Weight sum = new Weight(2000, Unit.g);
         assertEquals(sum, nonStandardUnitWeight.add(standardWeight));
     }
@@ -183,14 +184,14 @@ public class WeightTest {
     }
 
     @Test
-    public void multiplyWithInteger(){
+    public void multiplyWithInteger() {
         int factor = 2;
         assertEquals(standardWeight.multiply(new BigDecimal(factor)),
                 standardWeight.multiply(factor));
     }
 
     @Test
-    public void multiplyValid(){
+    public void multiplyValid() {
         Weight expectedMultiple = new Weight(2, kg);
         assertEquals(expectedMultiple,
                 standardWeight.multiply(new BigDecimal(2)));

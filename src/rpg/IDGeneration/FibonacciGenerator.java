@@ -2,46 +2,46 @@ package rpg.IDGeneration;
 
 public class FibonacciGenerator implements IDGenerator {
 
-	private long firstNumber;
-	private long secondNumber;
-	
-	public FibonacciGenerator(){
-		reset();
-	}
-	
-	@Override
-	public long nextID() {
-		if(firstNumber == 0){
-			firstNumber = 1;
-			return firstNumber;
-		}
-		if(secondNumber == 0){
-			secondNumber = 1;
-			return secondNumber;
-		}
-		secondNumber += firstNumber;
-		firstNumber = secondNumber - firstNumber;
-		return secondNumber;
-	}
+    private long firstNumber;
+    private long secondNumber;
 
-	@Override
-	public boolean hasNextID() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public FibonacciGenerator() {
+        reset();
+    }
 
-	@Override
-	public void reset() {
-		firstNumber = 0;
-		secondNumber = 0;
-	}
+    @Override
+    public long nextID() {
+        if (firstNumber == 0) {
+            firstNumber = 1;
+            return firstNumber;
+        }
+        if (secondNumber == 0) {
+            secondNumber = 1;
+            return secondNumber;
+        }
+        secondNumber += firstNumber;
+        firstNumber = secondNumber - firstNumber;
+        return secondNumber;
+    }
 
-	@Override
-	public long generateID(){
-		if(!hasNextID()){
-			reset();
-		}
-		return nextID();
-	}
+    @Override
+    public boolean hasNextID() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void reset() {
+        firstNumber = 0;
+        secondNumber = 0;
+    }
+
+    @Override
+    public long generateID() {
+        if (!hasNextID()) {
+            reset();
+        }
+        return nextID();
+    }
 
 }

@@ -7,46 +7,42 @@ import rpg.value.Weight;
 /**
  * A superclass of containers to contain a set of items.
  *
- * @invar The weight of the contents must be smaller or equal to the
- *        capacity of the container.
- *      | getWeightOfContents().compareTo(
- *
  * @author elias
- *
+ * @invar The weight of the contents must be smaller or equal to the
+ * capacity of the container.
+ * | getWeightOfContents().compareTo(
  */
-public abstract class Container extends Item{
+public abstract class Container extends Item {
 
-	public Container(int value, Weight weight, Weight capacity) {
-		super(value, weight);
+    public Container(int value, Weight weight, Weight capacity) {
+        super(value, weight);
 
-	}
+    }
 
-	/*****************************
-	 * Content - defensive
-	 *****************************/
+    /*****************************
+     * Content - defensive
+     *****************************/
 
-	/**
-	 * Adds the given item to the prime object.
-	 * @param item
-	 * 		  Item to be added.
-	 * @effect Item gets a reference 
-	 * @effect Prime object gets reference to item
-	 * @throws InvalidItemException
-	 * 		   If the container cannot contain this item an InvalidItemException is thrown
-	 * 		 | !canHaveAsContent(Item item)
-	 */
-	public void addToContent(Item item) throws InvalidItemException{
-		
-	}
-	
-	/**
-	 * 
-	 * @param item
-	 * @throws InvalidItemException
-	 */
-	public void removeFromContent(Item item) throws InvalidItemException{
-		
-	}
+    /**
+     * Adds the given item to the prime object.
+     *
+     * @param item Item to be added.
+     * @throws InvalidItemException If the container cannot contain this item an InvalidItemException is thrown
+     *                              | !canHaveAsContent(Item item)
+     * @effect Item gets a reference
+     * @effect Prime object gets reference to item
+     */
+    public void addToContent(Item item) throws InvalidItemException {
+
+    }
+
+    /**
+     * @param item
+     * @throws InvalidItemException
+     */
+    public void removeFromContent(Item item) throws InvalidItemException {
+
+    }
 
     /*****************************
      * Weight
@@ -54,6 +50,7 @@ public abstract class Container extends Item{
 
     /**
      * Calculates the weight of all the items this container contains.
+     *
      * @return A summation of the weights of the items contained.
      */
     public abstract Weight getWeightOfContents();
@@ -62,53 +59,51 @@ public abstract class Container extends Item{
      * Calculates the total weight of the container.
      *
      * @return The weight of the container plus the weight of the contents.
-     *       | return getWeight + getWeightOfContents()
+     * | return getWeight + getWeightOfContents()
      */
-    public Weight getTotalWeight(){
+    public Weight getTotalWeight() {
         return getWeight().add(getWeightOfContents());
     }
-	
-	/*****************************
-	 * Capacity
-	 *****************************/
-	
-	/**
-	 * Checks whether adding the given item will cause the total weight of
+
+    /*****************************
+     * Capacity
+     *****************************/
+
+    /**
+     * Checks whether adding the given item will cause the total weight of
      * items contained to exceed the capacity of the container.
-     * @return If the item variable is a null reference, return false.
-     *       | if item == null return false
-	 * @return Else return whether the current weight of the contents plus the
-     *         weight of the item exceeds the capacity.
-     *       | return exceedsCapacity(
-     *       |      getWeightOfContents().add(item.getWeight()))
-	 */
-	protected boolean exceedsCapacity(Item item){
-		return false;
-	}
+     *
+     * @return Else return whether the current weight of the contents plus the
+     * weight of the item exceeds the capacity.
+     * | return exceedsCapacity(
+     * |      getWeightOfContents().add(item.getWeight()))
+     */
+    protected boolean exceedsCapacity(Item item) {
+        return false;
+    }
 
 
     /**
      * Checks whether the given weight exceeds the capacity of this container.
-     * @param weight
-     *        Weight to be checked against the capacity.
-     * @return If the weight variable contains a null reference, return false.
-     *       | if weight == null return false
+     *
+     * @param weight Weight to be checked against the capacity.
      * @return Else return whether the given weight is larger than the
-     *         capacity of the container.
+     * capacity of the container.
      */
-	protected boolean exceedsCapacity(Weight weight){
-        if(weight == null)
+    protected boolean exceedsCapacity(Weight weight) {
+        if (weight == null)
             return false;
         else
-            return getCapacity().compareTo(weight)==-1;
+            return getCapacity().compareTo(weight) == -1;
     }
 
     /**
      * Returns the ca
+     *
      * @return
      */
-	public Weight getCapacity(){
-	    return this.capacity;
+    public Weight getCapacity() {
+        return this.capacity;
     }
 
     /**
@@ -116,15 +111,20 @@ public abstract class Container extends Item{
      * The capacity of a container dictates how much weight the
      * items contained collectively may weigh.
      */
-	protected Weight capacity = null;
+    protected Weight capacity = null;
 
-	public Mobile getHolder(){
-		if (parent == null){
-			return null;
-		} else {
-			return parent.getHolder();
-		}
-	}
+    public Mobile getHolder() {
+        if (parent == null) {
+            return null;
+        } else {
+            return parent.getHolder();
+        }
+    }
 
-	private Parent parent;
+
+    protected Parent getParent() {
+        return this.parent;
+    }
+
+    private Parent parent;
 }

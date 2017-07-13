@@ -1,6 +1,5 @@
 package rpg.inventory;
 
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.InvalidItemException;
 import rpg.Mobile;
 
@@ -11,8 +10,9 @@ public interface Parent {
 
     /**
      * Retrieves the holder of this parent item.
+     *
      * @return The mobile that is holding this item, directly
-     *         or indirectly.
+     * or indirectly.
      */
     Mobile getHolder();
 
