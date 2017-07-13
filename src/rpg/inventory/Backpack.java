@@ -3,11 +3,12 @@ package rpg.inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import be.kuleuven.cs.som.annotate.*;
+import rpg.IDGeneration.IDGenerator;
 import rpg.Mobile;
 import rpg.IDGeneration.BinomialGenerator;
 import rpg.value.Weight;
 
-public class Backpack extends Container {
+public class Backpack extends Container implements Parent{
 
 	private static BinomialGenerator idGen = new BinomialGenerator();
 	
@@ -29,8 +30,8 @@ public class Backpack extends Container {
 	}
 
     @Override
-    public boolean canHaveAsValue(int value) {
-        return false;
+    IDGenerator getIDGenerator() {
+        return null;
     }
 
 
@@ -80,11 +81,6 @@ public class Backpack extends Container {
 		
 	}
 
-	@Override
-	public Mobile getHolder() {
-		return null;
-	}
-
 	/*****************************
 	 * Weight - total
 	 *****************************/
@@ -96,4 +92,25 @@ public class Backpack extends Container {
     public boolean isValidWeight(Weight weight) {
         return false;
     }
+
+    @Override
+    public Weight getWeightOfContents() {
+        return null;
+    }
+
+    /*****************************
+	 * Holder
+	 *****************************/
+
+	/**
+	 * Retrieves the holder of this container.
+	 * @return If the parent of this container is null, it means the container
+	 *         is lying on the ground. As a result it cannot have a holder so
+	 *         a null reference must be returned.
+	 *       | if parent == null return null
+	 *         If the container does have a parent, the parent is queried for it's
+	 *         holder.
+	 *       | else return parent.getHolder()
+	 */
+
 }

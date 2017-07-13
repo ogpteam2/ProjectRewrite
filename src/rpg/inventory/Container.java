@@ -14,7 +14,7 @@ import rpg.value.Weight;
  * @author elias
  *
  */
-public abstract class Container extends Item implements Parent{
+public abstract class Container extends Item{
 
 	public Container(int value, Weight weight, Weight capacity) {
 		super(value, weight);
@@ -118,27 +118,13 @@ public abstract class Container extends Item implements Parent{
      */
 	protected Weight capacity = null;
 
-    /*****************************
-     * Holder
-     *****************************/
+	public Mobile getHolder(){
+		if (parent == null){
+			return null;
+		} else {
+			return parent.getHolder();
+		}
+	}
 
-    /**
-     * Retrieves the holder of this container.
-     * @return If the parent of this container is null, it means the container
-     *         is lying on the ground. As a result it cannot have a holder so
-     *         a null reference must be returned.
-     *       | if parent == null return null
-     *         If the container does have a parent, the parent is queried for it's
-     *         holder.
-     *       | else return parent.getHolder()
-     */
-    public Mobile getHolder(){
-        if (parent == null){
-            return null;
-        } else {
-            return parent.getHolder();
-        }
-    }
-
-    private Parent parent;
+	private Parent parent;
 }

@@ -1,5 +1,7 @@
 package rpg.inventory;
 
+import org.omg.CORBA.DynAnyPackage.Invalid;
+import rpg.InvalidItemException;
 import rpg.Mobile;
 
 /**
@@ -13,4 +15,8 @@ public interface Parent {
      *         or indirectly.
      */
     Mobile getHolder();
+
+    void addToContent(Item item) throws InvalidItemException;
+
+    void removeFromContent(Item item) throws InvalidItemException;
 }
