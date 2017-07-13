@@ -1,36 +1,24 @@
 package rpg.IDGeneration;
 
-
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
-
-import java.util.ArrayList;
-
 /**
- * A class that generates binomial numbers.
+ * An implementation of the IDGenerator interface that generates binomial
+ * coëfficients according to the following formula:
+ * $$\sum^{n}_{i=0}{\binom{n}{i}}$$
+ * The numbers that come out of this formula also happen to be powers of two.
+ * For the sake of simplicity, this is the way this generator calculates
+ * the numbers it generates.
  *
- * @author Robbe, Elias
+ * @invar Every number this generator generates adheres to the formula above.
+ *        @see <a href="https://en.wikipedia.org/wiki/Pascal%27s_triangle#Rows">Informal proof</a>
+ *
+ * @author Elias Storme
+ * @version 1.1
  */
 public class BinomialGenerator implements IDGenerator {
 
-    //TODO rework method names and documentation
-
-    /**
-     * Arraylist storing a row of Pascal's pyramid.
-     * On the one hand this row is used to calculate a binomial coëfficient
-     * by summing the row.
-     * On the other hand it is used to calculate the next row in the pyramid.
-     */
-    private ArrayList<Long> pyramidRow;
-
-    /**
-     * The current value of the triangle of Pascal.
-     */
-    private long currentValue;
-    /**
-     * the current row of the triangle of Pascal.
-     */
-    private int currentRowNum;
+    /*****************************
+     * Constructor
+     *****************************/
 
     /**
      * Creates a new Binomialgenerator.
@@ -43,15 +31,21 @@ public class BinomialGenerator implements IDGenerator {
         reset();
     }
 
+    /*****************************
+     * Interface method
+     *****************************/
+
     /**
      * Generates an ID.
      *
      * @return The next sequential ID
      * | return nextID()
+     * @effect Advances the generator one step.
      * @effect If there is no sequential next ID, reset the generator.
      * | if !hasNextID()
      * |      reset()
      */
+    @Override
     public long generateID() {
         if (!hasNextID()) {
             reset();
@@ -59,110 +53,46 @@ public class BinomialGenerator implements IDGenerator {
         return nextID();
     }
 
+    /*****************************
+     * State variable and mutator
+     *****************************/
+
+    /**
+     * Resets the generator to it's initial state
+     * @effect The state variable current is set to 1.
+     */
+    public void reset(){
+        current = 1L;
+    }
+
+    long current;
+
+    /*****************************
+     * Calculation
+     *****************************/
+
+    /**
+     * Calculates the sequentially next ID, advances the generator.
+     *
+     * @return The next ID. This is just the state variable.
+     * | return current
+     * @effect The state variable is multiplied by two.
+     * | current = current * 2
+     */
+    private long nextID() {
+        current *= 2;
+        return current;
+    }
+
     /**
      * Checks if a next ID can be generated.
      *
-     * @return True if the next id would overflow the long variable it is contained in.
+     * @return False if the next id would overflow the long variable it is contained in.
      * This is done by checking if the next calculated id is negative, as over-
      * flowing a long in java causes it to flip the sign bit.
-     * | return calculateRowSum(pyramidRow) >= 0
+     * | return rowSum(calculateNextRow()) &gt;= 0
      */
     public boolean hasNextID() {
-        return calculateRowSum(pyramidRow) >= 0;
-    }
-
-    /**
-     * Calculates the next sequential ID.
-     *
-     * @effect pyramidrow is replaced by the next row.
-     * | setPyramidRow(calculateNextRow())
-     * @effect The rownumber is advan
-     */
-    private void nextID() {
-        setPyramidRow(calculateNextRow());
-        advanceCurrentRowNum();
-        long nextLong = calculateRowSum(pyramidRow);
-        setCurrentValue(nextLong);
-        return nextLong;
-    }
-
-    /**
-     * Resets the iterator to the first binomial coefficient.
-     *
-     * @effect the pyramidrow is re-initialised to an empty arraylist
-     * @effect the pyramid row number is set to 1
-     */
-    public void reset() {
-        setPyramidRow(new ArrayList<Long>());
-        setCurrentRowNum(1);
-    }
-
-    private ArrayList<Long> calculateNextRow() {
-        ArrayList<Long> nextRow = new ArrayList<Long>();
-        nextRow.add(1L);
-        for (int i = 0; i < pyramidRow.size() - 1; i++) {
-            nextRow.add(pyramidRow.get(i) + pyramidRow.get(i + 1));
-        }
-        nextRow.add(1L);
-        return nextRow;
-    }
-
-    /**
-     * Replaces the current pyramidRow with another.
-     *
-     * @param nextRow The pyramidrow the current pyramidrow will be replaced with.
-     */
-    @Raw
-    private void setPyramidRow(ArrayList<Long> nextRow) {
-        this.pyramidRow = nextRow;
-    }
-
-    private long calculateRowSum(ArrayList<Long> row) {
-        long rowSum = 0L;
-        for (long p : row) {
-            rowSum += p;
-        }
-        return rowSum;
-    }
-
-    @Basic
-    @Raw
-    public long getCurrentValue() {
-        return currentValue;
-    }
-
-
-    private void setCurrentValue(long currentValue) {
-        this.currentValue = currentValue;
-    }
-
-    /**
-     * Returns the current row number.
-     *
-     * @return the current row number.
-     */
-    @Raw
-    @Basic
-    public int getCurrentRowNum() {
-        return currentRowNum;
-    }
-
-
-    /**
-     * The value of the current row number is directly set
-     *
-     * @param currentRowNum value to set the row number to
-     */
-    private void setCurrentRowNum(int currentRowNum) {
-        this.currentRowNum = currentRowNum;
-    }
-
-    /**
-     * Advances the row counter by one
-     *
-     * @Post one is added to the currentRowNum
-     */
-    private void advanceCurrentRowNum() {
-        this.currentRowNum++;
+        return current * 2 > 0;
     }
 }

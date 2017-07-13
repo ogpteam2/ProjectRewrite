@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FibonacciGeneratorTest {
 
@@ -26,10 +27,11 @@ public class FibonacciGeneratorTest {
 
     @Test
     public void stressTest() {
-        gen.reset();
-        for (int i = 0; i < 1000; i++) {
-            gen.nextID();
+        for (int i = 0; i < 1E+9; i++) {
+            gen.generateID();
         }
+        assertTrue(gen.generateID()>= 0);
+        System.out.println(gen.generateID());
     }
 
 }

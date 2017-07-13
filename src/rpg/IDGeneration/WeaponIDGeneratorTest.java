@@ -6,13 +6,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BinomialGeneratorTest {
+public class WeaponIDGeneratorTest {
 
-    BinomialGenerator idGen;
+    WeaponIDGenerator idGen;
 
     @Before
     public void setUp() {
-        idGen = new BinomialGenerator();
+        idGen = new WeaponIDGenerator();
     }
 
     @Test
@@ -20,10 +20,10 @@ public class BinomialGeneratorTest {
         long[] expected = new long[50];
         long[] generated = new long[50];
         for (int i = 0; i < 50; i++) {
-            expected[i] = (long) Math.pow(2, i+1);
+            expected[i] = (i+1)*6;
             generated[i] = idGen.generateID();
         }
-        assertArrayEquals(expected, generated);
+        assertArrayEquals(expected,generated);
     }
 
     @Test
@@ -31,6 +31,6 @@ public class BinomialGeneratorTest {
         for (int i = 0; i < 1E+9; i++) {
             idGen.generateID();
         }
-        assertTrue(idGen.generateID() >= 0);
+        assertTrue(idGen.generateID()>= 0);
     }
 }
