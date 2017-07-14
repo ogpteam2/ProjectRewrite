@@ -2,6 +2,7 @@ package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.InvalidItemException;
 import rpg.Mobile;
 
@@ -105,10 +106,24 @@ public class Anchorpoint implements Parent {
      * | item.getParent() == null
      * @post The anchorpoint has a null refrence
      */
-    public void dropItem(Item item) throws InvalidItemException {
-        if (!containsItem()) throw new InvalidItemException("Anchorpoint does not contain an item!");
-        else {
+    public void dropItem(Item item) throws InvalidItemException, NullPointerException {
+        if (item == null) throw new NullPointerException("Item is null reference!");
+        else if (item.equals(getContent())){
+            throw new InvalidItemException("Anchorpoint does not contain given item!");
+        } else {
+            if (Item instanceof hasParent){
 
+            } else {
+
+            }
+        }
+    }
+
+    public void dropItem() throws InvalidItemException {
+        try{
+            dropItem(getContent());
+        } catch (NullPointerException e){
+            throw new InvalidItemException("Anchorpoint does not contain an item!");
         }
     }
 

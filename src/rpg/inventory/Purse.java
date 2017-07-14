@@ -69,6 +69,72 @@ public class Purse extends Container {
      *****************************/
 
     /**
+     * Adds the given ducat to the contents of this purse.
+     * @param ducat
+     *        Ducat to be added.
+     * @throws NullPointerException
+     *         If the given ducat contains a null pointer, exception is thrown.
+     * @throws InvalidItemException
+     *         If the purse is torn, exception is thrown.
+     * @effect If the ducat is effective, it is added to the purse.
+     *       | if ducat != null:
+     *       |      content.push(ducat)
+     * @effect If adding the ducat has exceeded the capacity of this purse, tear it.
+     *       | if exceedsCapacity(getWeightOfContents()):
+     *       |      tear()
+     */
+    public void addDucat(Ducat ducat) throws NullPointerException, InvalidItemException{
+        if(isTorn()) throw new InvalidItemException("Purse is torn!");
+        if(ducat == null){
+            throw new NullPointerException("Given ducat contains null pointer");
+        } else {
+            content.push(ducat);
+            if (exceedsCapacity(getWeightOfContents())){
+                tear();
+            }
+        }
+    }
+
+    /**
+     * Adds all the given ducats to this purse.
+     * @param ducats
+     *        Stack of ducats to be added
+     * @effect All the given ducats are added.
+     *       | content.add
+     */
+    public void addDucats(Stack<Ducat> ducats) throws NullPointerException{
+        for (Ducat ducat: ducats
+             ) {
+            try{
+                addDucat(ducat);
+                ducats.pop()
+            } catch (InvalidItemException e){
+                break;
+            }
+        }
+    }
+
+    /**
+     * Transfers the contents of this purse to the given other.
+     * @param purse
+     *        Purse the contents are to be added to.
+     * @effect All of this purse's contents are removed.
+     *       | dropAllContent()
+     * @effect This purse is dropped to the ground.
+     *       | getParent().drop(this)
+     * @effect All ducats that were once in this purse are added to
+     *         the given other purse.
+     *       | purse.addDucats(this.content)
+     */
+    public void transferContentTo(Purse purse){
+        Stack<Ducat> ducatsToTransfer = this.getContent();
+        this.dropAllContent();
+        this.getParent().dropItem(this);
+
+        purse.addDucats(ducatsToTransfer);
+    }
+
+    /**
      * Drops all the ducats held within this purse.
      *
      * @effect Every ducat in the content of this purse are dropped.
@@ -182,7 +248,22 @@ public class Purse extends Container {
                 }
             }
         }
+        torn = true;
     }
+
+    /**
+     * Checks whether the purse is torn.
+     */
+    public boolean isTorn(){
+        return this.torn;
+    }
+
+    /**
+     * Boolean storing whether the purse is torn.
+     * If the purse is torn it is effectively useless as it won't contain
+     * any items, and no items can be added anymore.
+     */
+    private boolean torn = false;
 
     /**
      * Sets the capacity for this purse to the given value.

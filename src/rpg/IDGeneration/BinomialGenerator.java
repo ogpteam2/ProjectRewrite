@@ -41,7 +41,7 @@ public class BinomialGenerator implements IDGenerator {
      * @return The next sequential ID
      * | return nextID()
      * @effect Advances the generator one step.
-     * @effect If there is no sequential next ID, reset the generator.
+     * @effect If there is no next sequential ID, reset the generator.
      * | if !hasNextID()
      * |      reset()
      */

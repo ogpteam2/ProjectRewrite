@@ -12,7 +12,7 @@ import rpg.value.Weight;
  * capacity of the container.
  * | getWeightOfContents().compareTo(
  */
-public abstract class Container extends Item {
+public abstract class Container extends Item implements hasParent {
 
     public Container(int value, Weight weight, Weight capacity) {
         super(value, weight);
@@ -121,10 +121,15 @@ public abstract class Container extends Item {
         }
     }
 
-
-    protected Parent getParent() {
+    @Override
+    public Parent getParent() {
         return this.parent;
     }
 
     private Parent parent;
+
+    @Override
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
 }

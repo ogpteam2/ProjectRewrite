@@ -8,7 +8,7 @@ import rpg.value.Weight;
 /**
  * Created by elias on 08/07/17.
  */
-public class Weapon extends Item {
+public class Weapon extends Item implements hasParent{
 
     public Weapon(int value, long identifier) {
         super(value, Weight.kg_0);
@@ -54,6 +54,16 @@ public class Weapon extends Item {
         } else {
             return parent.getHolder();
         }
+    }
+
+    @Override
+    public void setParent(Parent parent){
+
+    }
+
+    @Override
+    public Parent getParent(){
+        return this.parent;
     }
 
     private Parent parent;
