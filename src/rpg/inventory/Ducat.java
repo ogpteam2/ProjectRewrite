@@ -4,14 +4,46 @@ import rpg.IDGeneration.IDGenerator;
 import rpg.value.Unit;
 import rpg.value.Weight;
 
+import java.util.Stack;
+
+/**
+ * A class of ducats to be used as currency in the game.
+ *
+ * @invar The value of a ducat shall always be equal to one, as it is
+ * to be used as a monetary unit.
+ * | getValue() == 1
+ */
 public class Ducat extends Item {
 
-    public static Weight DUCAT_WEIGHT = new Weight(50, Unit.g);
-
+    /**
+     * Creates a new ducat.
+     *
+     * @effect Uses the superclass constructor to set value and weight
+     * to the predefined constants for a ducat.
+     * |
+     */
     public Ducat() {
         super(1, DUCAT_WEIGHT);
-        // TODO Auto-generated constructor stub
     }
+
+    /**
+     * Creates a stack containing the given amount of ducats.
+     * @param amount
+     *        Amount of ducats the stack has to contain.
+     * @return A stack of length amount containing ducats
+     * |
+     */
+    public Stack<Ducat> Ducat(int amount){
+        Stack<Ducat> ducats = new Stack<>();
+        for (int i = 0; i < amount; i++) {
+            ducats.add(new Ducat());
+        }
+        return ducats;
+    }
+
+    /*****************************
+     * Value
+     *****************************/
 
     /**
      * The value of items uses a ducat as the unit value. The value of a ducat
@@ -28,6 +60,9 @@ public class Ducat extends Item {
      * Identification
      *****************************/
 
+    /**
+     * Getter for the ducat's implementation of the IDGenerator interface.
+     */
     @Override
     IDGenerator getIDGenerator() {
         return idGen;
@@ -49,4 +84,13 @@ public class Ducat extends Item {
      * a lambda expression. I used this because the implementation is so incredibly simple.
      */
     private static IDGenerator idGen = () -> -1;
+
+    /*****************************
+     * Weight
+     *****************************/
+
+    /**
+     * Constant declaring the weight of one ducat.
+     */
+    public static Weight DUCAT_WEIGHT = new Weight(50, Unit.g);
 }
