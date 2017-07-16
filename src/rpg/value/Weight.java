@@ -47,7 +47,6 @@ public class Weight implements Comparable<Weight> {
      * @post The numeral has to be rounded to the correct number of decimal places
      * | isValidRounding(this.numeral)
      */
-    @Raw
     public Weight(BigDecimal numeral, Unit unit) {
         //set unit
         if (isValidUnit(unit)) this.unit = unit;
@@ -71,7 +70,6 @@ public class Weight implements Comparable<Weight> {
      * and the unit "kg".
      * | this(numeral, Unit.kg)
      */
-    @Raw
     public Weight(BigDecimal numeral) {
         this(numeral, Unit.kg);
     }
@@ -212,7 +210,7 @@ public class Weight implements Comparable<Weight> {
      * done to the nearest neighbour and the even neighbour if equidistant.
      */
     @Immutable
-    protected MathContext getContext() {
+    public MathContext getContext() {
         return new MathContext(
                 getUnit().getPrecision(),
                 RoundingMode.HALF_EVEN
