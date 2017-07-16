@@ -1,5 +1,6 @@
 package rpg;
 
+import rpg.exception.InvalidNameException;
 import rpg.inventory.AnchorType;
 import rpg.inventory.Anchorpoint;
 import rpg.inventory.Item;
@@ -8,6 +9,7 @@ import rpg.value.Weight;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.regex.Pattern;
 
 public abstract class Mobile {
 
@@ -19,12 +21,62 @@ public abstract class Mobile {
      * |    anchorpoints.get(type) != null
      * @note All
      */
-    public Mobile(EnumSet<AnchorType> anchorTypes) {
+    public Mobile(String name, EnumSet<AnchorType> anchorTypes) {
+        //name
+        setName(name);
+        //anchorpoints
         anchorpoints = new EnumMap<AnchorType, Anchorpoint>(AnchorType.class);
         for (AnchorType type : anchorTypes) {
             anchorpoints.put(type, new Anchorpoint(this, type));
         }
     }
+
+    /*****************************
+     * Name
+     *****************************/
+
+    /**
+     * Setter for the name of this mobile.
+     * @param name
+     *        String the name is to be set to.
+     * @throws InvalidNameException
+     *         If the name is not effective, exception is thrown.
+     *       | if !isValidName(name) throw InvalidNameException
+     */
+    public void setName(String name) throws InvalidNameException{
+        if(!isValidName(name)) throw new InvalidNameException("Name is not allowed!");
+        this.name = name;
+    }
+
+    /**
+     * Getter for the name of this mobile.
+     */
+    public String getName(){
+        return this.name;
+    }
+
+    /**
+     * Checks whether the given string is an effective name for a mobile.
+     * @param name
+     *        String to be checked.
+     * @return Whether the given string is an effective name.
+     *         Conditions to be defined on subclass level.
+     */
+    public abstract boolean isValidName(String name);
+
+    /**
+     * Variable for storing the name of this mobile.
+     */
+    private String name = null;
+
+    /*****************************
+     * Hitpoints - nominal
+     *****************************/
+
+
+    /**
+     *
+     */
 
     /*****************************
      * Anchorpoints

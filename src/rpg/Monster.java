@@ -26,4 +26,23 @@ public class Monster extends Mobile {
     }
 
 
+    /*****************************
+     * 2.1: Name
+     *****************************/
+
+    /**
+     * Checks whether the given string is an effective name for a monster.
+     * @param name
+     *        String to be checked.
+     * @return If the string does not start with a capital letter, return false.
+     *       | if !name.matches("^[A-Z]") return false
+     *         If the rest of the string consists of characters other than letters,
+     *         spaces and apostrophes, return false.
+     *       | if !name.matches("^[A-Z][A-Za-z ']+") return false
+     *         Else return true
+     */
+    public boolean isValidName(String name){
+        return name.matches("^[A-Z][A-Za-z ']+");
+    }
+
 }
