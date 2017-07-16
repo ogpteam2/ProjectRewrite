@@ -2,8 +2,7 @@ package rpg.inventory;
 
 import rpg.IDGeneration.FibonacciGenerator;
 import rpg.IDGeneration.IDGenerator;
-import rpg.InvalidItemException;
-import rpg.Mobile;
+import rpg.exception.InvalidItemException;
 import rpg.value.Weight;
 
 import java.util.Arrays;
@@ -70,63 +69,85 @@ public class Purse extends Container {
 
     /**
      * Adds the given ducat to the contents of this purse.
-     * @param ducat
-     *        Ducat to be added.
-     * @throws NullPointerException
-     *         If the given ducat contains a null pointer, exception is thrown.
-     * @throws InvalidItemException
-     *         If the purse is torn, exception is thrown.
+     *
+     * @param ducat Ducat to be added.
+     * @throws NullPointerException If the given ducat contains a null pointer, exception is thrown.
+     * @throws InvalidItemException If the purse is torn, exception is thrown.
      * @effect If the ducat is effective, it is added to the purse.
-     *       | if ducat != null:
-     *       |      content.push(ducat)
+     * | if ducat != null:
+     * |      content.push(ducat)
      * @effect If adding the ducat has exceeded the capacity of this purse, tear it.
-     *       | if exceedsCapacity(getWeightOfContents()):
-     *       |      tear()
+     * | if exceedsCapacity(getWeightOfContents()):
+     * |      tear()
      */
-    public void addDucat(Ducat ducat) throws NullPointerException, InvalidItemException{
-        if(isTorn()) throw new InvalidItemException("Purse is torn!");
-        if(ducat == null){
+    public void addDucat(Ducat ducat)
+            throws NullPointerException, InvalidItemException {
+        if (isTorn()) throw new InvalidItemException("Purse is torn!");
+        if (ducat == null) {
             throw new NullPointerException("Given ducat contains null pointer");
         } else {
             content.push(ducat);
-            if (exceedsCapacity(getWeightOfContents())){
+            if (exceedsCapacity(getWeightOfContents())) {
                 tear();
             }
         }
     }
 
+    public void addDucats(Ducat... ducats)
+            throws NullPointerException {
+        for (Ducat ducat : ducats) {
+            if (ducat == null)
+                throw new NullPointerException("Given ducat contains null pointer");
+        }
+        Stack<Ducat> ducatStack = new Stack<>();
+        ducatStack.addAll(Arrays.asList(ducats));
+    }
+
     /**
      * Adds all the given ducats to this purse.
-     * @param ducats
-     *        Stack of ducats to be added
-     * @effect All the given ducats are added.
-     *       | content.add
+     *
+     * @param ducats Stack of ducats to be added
+     * @effect Tries to add all the ducats in the stack to this purse one by one.
+     * | for each ducat in ducats:
+     * |    try addDucat(ducat)
+     * @effect If the purse tears and not all ducats have been added, the remaining
+     * ducats are added to the parent of the purse (with the rest of the contents of
+     * the purse, as it has been torn)
+     * | if !ducats.empty():
+     * |    for each ducat in ducats:
+     * |        try getParent.addItem(ducat)
+     * @effect If that fails, the remaining ducats are dropped to the ground by just
+     * letting the method terminating without adding the ducats to an inventory.
      */
-    public void addDucats(Stack<Ducat> ducats) throws NullPointerException{
-        for (Ducat ducat: ducats
-             ) {
-            try{
-                addDucat(ducat);
-                ducats.pop()
-            } catch (InvalidItemException e){
+    public void addDucats(Stack<Ducat> ducats) throws NullPointerException {
+        while (!ducats.isEmpty()) {
+            try {
+                addDucat(ducats.pop());
+            } catch (InvalidItemException e) {
                 break;
+            }
+        }
+        while (!ducats.isEmpty()) {
+            try {
+                getParent().addItem(ducats.pop());
+            } catch (InvalidItemException e) {
             }
         }
     }
 
     /**
      * Transfers the contents of this purse to the given other.
-     * @param purse
-     *        Purse the contents are to be added to.
+     *
+     * @param purse Purse the contents are to be added to.
      * @effect All of this purse's contents are removed.
-     *       | dropAllContent()
+     * | dropAllContent()
      * @effect This purse is dropped to the ground.
-     *       | getParent().drop(this)
+     * | getParent().drop(this)
      * @effect All ducats that were once in this purse are added to
-     *         the given other purse.
-     *       | purse.addDucats(this.content)
+     * the given other purse.
+     * | purse.addDucats(this.content)
      */
-    public void transferContentTo(Purse purse){
+    public void transferContentTo(Purse purse) {
         Stack<Ducat> ducatsToTransfer = this.getContent();
         this.dropAllContent();
         this.getParent().dropItem(this);
@@ -241,9 +262,9 @@ public class Purse extends Container {
             getParent().dropItem(this);
         } else {
             for (int i = 0; i < getContent().size(); i++) {
-                try{
+                try {
                     getParent().addItem(this.drop());
-                } catch (InvalidItemException e){
+                } catch (InvalidItemException e) {
                     //nothing has to be done, reference to ducat already removed.
                 }
             }
@@ -254,7 +275,7 @@ public class Purse extends Container {
     /**
      * Checks whether the purse is torn.
      */
-    public boolean isTorn(){
+    public boolean isTorn() {
         return this.torn;
     }
 

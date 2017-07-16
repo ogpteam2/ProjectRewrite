@@ -33,12 +33,12 @@ public class Weapon extends Item implements hasParent{
     /**
      * Constant specifying the maximum value the damage of a weapon may be.
      */
-    private static int MAX_DMG = 100;
+    private final static int MAX_DMG = 100;
 
     /**
      * Constant specifying how many ducats a unit of damage is worth.
      */
-    private static int VALUE_PER_DMG = 2;
+    private final static int VALUE_PER_DMG = 2;
 
     /*****************************
      * 3.0: Constructors
@@ -188,12 +188,17 @@ public class Weapon extends Item implements hasParent{
         }
     }
 
-    @Override
+    /**
+     * Sets the parent for this weapon.
+     * @pre The parent has to contain a reference to this weapon.
+     * @param parent
+     */
+    @Override @Basic @Raw
     public void setParent(Parent parent){
-
+        this.parent = parent;
     }
 
-    @Override
+    @Override @Basic @Raw
     public Parent getParent(){
         return this.parent;
     }

@@ -1,8 +1,8 @@
 package rpg.inventory;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
+//todo spec for class
 /**
  * An implementation of the Enumeration interface for traversing the
  * items held within a Backpack.
@@ -15,7 +15,7 @@ public class BackpackIterator implements Enumeration<Item> {
     /*****************************
      * Constructor
      *****************************/
-
+    //TODO formal spec for constructor
     /**
      * Creates a new BackpackIterator which will iterate over the given
      * content data structure.
@@ -23,17 +23,20 @@ public class BackpackIterator implements Enumeration<Item> {
      *        Content data structure of the backpack constructing this
      *        BackpackIterator.
      * @effect Sets the internal content attribute to the given one.
+     * @effect The HashMap iterator is constructed for the content.
+     * @effect The ArrayList iterator is constructed for the first element in
+     * the HashMap iterator.
      */
     public BackpackIterator(HashMap<Long, ArrayList<Item>> content){
         this.content = content;
-        hashMapIterator = content.entrySet().iterator();
-        arrayListIterator = hashMapIterator.next().getValue().iterator();
+        hashMapIterator = content.values().iterator();
+        arrayListIterator = hashMapIterator.next().iterator();
     }
 
     /*****************************
      * Content
      *****************************/
-
+    //todo spec for content
     private HashMap<Long, ArrayList<Item>> content = null;
 
     /*****************************
@@ -50,7 +53,7 @@ public class BackpackIterator implements Enumeration<Item> {
     /**
      * Iterator for the HashMap.
      */
-    private Iterator<Map.Entry<Long,ArrayList<Item>>> hashMapIterator = null;
+    private Iterator<ArrayList<Item>> hashMapIterator = null;
 
     /**
      * Iterator for the nested ArrayList.
@@ -89,7 +92,7 @@ public class BackpackIterator implements Enumeration<Item> {
     @Override
     public Item nextElement() throws NoSuchElementException {
         if(!arrayListIterator.hasNext()){
-            arrayListIterator = hashMapIterator.next().getValue().iterator();
+            arrayListIterator = hashMapIterator.next().iterator();
         }
         return arrayListIterator.next();
     }
