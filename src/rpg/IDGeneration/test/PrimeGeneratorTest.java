@@ -1,10 +1,11 @@
-package rpg.IDGeneration;
+package rpg.IDGeneration.test;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import rpg.IDGeneration.PrimeGenerator;
 
 public class PrimeGeneratorTest {
 	
@@ -20,7 +21,6 @@ public class PrimeGeneratorTest {
 
 	@Test
 	public void firstElementsCheck() {
-		gen.reset();
 		for(int i = 0; i < littlePrimeList.length; i++){
 			generatedPrimeList[i] = gen.nextID();
 		}

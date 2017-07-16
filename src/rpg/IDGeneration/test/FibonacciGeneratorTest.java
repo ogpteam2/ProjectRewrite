@@ -1,7 +1,8 @@
-package rpg.IDGeneration;
+package rpg.IDGeneration.test;
 
 import org.junit.Before;
 import org.junit.Test;
+import rpg.IDGeneration.FibonacciGenerator;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
