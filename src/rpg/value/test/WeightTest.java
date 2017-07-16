@@ -1,7 +1,9 @@
-package rpg.value;
+package rpg.value.test;
 
 import org.junit.Before;
 import org.junit.Test;
+import rpg.value.Unit;
+import rpg.value.Weight;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
