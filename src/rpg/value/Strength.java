@@ -1,5 +1,7 @@
 package rpg.value;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -7,7 +9,7 @@ import java.math.RoundingMode;
 /**
  * Created by elias on 16/07/2017.
  */
-public class Strength {
+public class Strength implements Comparable<Strength>{
 
     /*****************************
      * Constants
@@ -23,14 +25,32 @@ public class Strength {
      * Constructors
      *****************************/
 
+    /**
+     * Initialises a new Strength with the given numeric value.
+     * @param numeral
+     *        Numeral for the new instance of Strength
+     * @effect If the given numeral is effective, the attribute numeral is set
+     * to it's value.
+     * | if isValidNumeral(numeral)
+     * |    this.numeral = numeral
+     * @effect Else the numeral is set to zero.
+     * | else this.numeral = 0
+     * @effect The numeral will be rounded to the precision specified by the
+     * MathContext constant.
+     */
     public Strength(BigDecimal numeral){
         if(!isValidNumeral(numeral)){
             this.numeral = BigDecimal.ZERO;
         } else {
             this.numeral = numeral.round(getContext());
         }
-
     }
+
+    /**
+     * Constantly defined instance of Strength depicting no strength at all.
+     */
+    public final static Strength none =
+            new Strength(BigDecimal.ZERO);
 
     /*****************************
      * Numeral
@@ -53,14 +73,35 @@ public class Strength {
             return true;
     }
 
+    /**
+     * Getter for the numeral.
+     */
+    public BigDecimal getNumeral() {
+        return numeral;
+    }
 
-
+    /**
+     * Variable storing the numerical value of this instance of Strength.
+     */
     private final BigDecimal numeral;
 
     /*****************************
      * Rounding & precision
      *****************************/
 
+    /**
+     * Retrieves the MathContext to be used when rounding the numeral.
+     *
+     * @return MathContext object determining the way the numeral of the Strength class is
+     * rounded and what precision it has.
+     * <p>
+     * The precision is set according to the precision constant, specifying how many decimal
+     * places rounding is to be done to.
+     * <p>
+     * The rounding is done using the half even method, dictating that rounding is
+     * done to the nearest neighbour and the even neighbour if equidistant.
+     */
+    @Immutable
     public static MathContext getContext(){
         return new MathContext(
                 PRECISION,
@@ -72,16 +113,85 @@ public class Strength {
      * Logical operations
      *****************************/
 
+    /**
+     * Compares this Strength instance to the given other.
+     * @param other
+     *        Strength instance to compare to.
+     * @return The comparison between the numerals.
+     * | let:
+     * |    thisNumeral = getNumeral()
+     * |    otherNumeral = other.getNumeral()
+     * | then:
+     * |    return thisNumeral.compareTo(otherNumeral)
+     */
+    @Override
+    public int compareTo(Strength other) {
+        return getNumeral().compareTo(other.getNumeral());
+    }
 
     /*****************************
      * Arithmetic operations
      *****************************/
 
+    /**
+     * Adds the given amount to the numeral of this strength.
+     * @param amount
+     *        Integer mount to be added.
+     * @return A new instance of Strength with as numeral the sum of the old
+     * numeral and the given amount.
+     * @note If the given amount is a negative integer larger than the numeral of
+     * this strength, passing it through the constructor will automatically revert
+     * it to zero.
+     */
     public Strength add(int amount){
-
+        BigDecimal newNumeral =
+                getNumeral().add(new BigDecimal(amount));
+        return new Strength(newNumeral);
     }
 
-    public Strength multiply(int factor){
+    /**
+     * Multiplies the numeral of this strength with the given double factor.
+     * @param factor
+     *        Multiplication factor.
+     * @return If the given factor is equal to zero, returns the strength constant none.
+     *       | if factor == 0 return Strength.none
+     *         Else if the factor is negative, multiply by absolute value.
+     *       | else if factor < 0 return multiply(abs(factor))
+     *         Else return new instance of strength with as numeral the product of
+     *         the old numeral and the given factor.
+     *       | else return new Strength(numeral * factor)
+     */
+    private Strength multiply(double factor){
+        if (factor == 0){
+            return Strength.none;
+        } else if (factor < 0){
+            return this.multiply(Math.abs(factor));
+        } else {
+            BigDecimal newNumeral =
+                    getNumeral().multiply(new BigDecimal(factor));
+            return new Strength(newNumeral);
+        }
+    }
 
+    /**
+     * Multiplies the numeral of this strength with the given integer factor.
+     * @param factor
+     *        Multiplication factor.
+     * @return Casts integer to double and multiplies.
+     *       | return multiply((double) factor)
+     */
+    public Strength multiply(int factor){
+        return multiply((double) factor);
+    }
+
+    /**
+     * Divides the numeral of this strength by the given integer divisor.
+     * @param divisor
+     *        Value to divide with.
+     * @return Multiplies by one over the given divisor.
+     *       | return multiply(1/divisor)
+     */
+    public Strength divide(int divisor){
+        return multiply(1/divisor);
     }
 }
