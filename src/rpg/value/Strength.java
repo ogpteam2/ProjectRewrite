@@ -53,6 +53,15 @@ public class Strength implements Comparable<Strength>{
             new Strength(BigDecimal.ZERO);
 
     /*****************************
+     * Hashcode
+     *****************************/
+
+    @Override
+    public int hashCode(){
+        return getNumeral().hashCode() + "strength".hashCode();
+    }
+
+    /*****************************
      * Numeral
      *****************************/
 
@@ -102,7 +111,7 @@ public class Strength implements Comparable<Strength>{
      * done to the nearest neighbour and the even neighbour if equidistant.
      */
     @Immutable
-    public static MathContext getContext(){
+    private static MathContext getContext(){
         return new MathContext(
                 PRECISION,
                 RoundingMode.HALF_EVEN
@@ -134,22 +143,6 @@ public class Strength implements Comparable<Strength>{
      *****************************/
 
     /**
-     * Adds the given amount to the numeral of this strength.
-     * @param amount
-     *        Integer mount to be added.
-     * @return A new instance of Strength with as numeral the sum of the old
-     * numeral and the given amount.
-     * @note If the given amount is a negative integer larger than the numeral of
-     * this strength, passing it through the constructor will automatically revert
-     * it to zero.
-     */
-    public Strength add(int amount){
-        BigDecimal newNumeral =
-                getNumeral().add(new BigDecimal(amount));
-        return new Strength(newNumeral);
-    }
-
-    /**
      * Multiplies the numeral of this strength with the given double factor.
      * @param factor
      *        Multiplication factor.
@@ -160,6 +153,8 @@ public class Strength implements Comparable<Strength>{
      *         Else return new instance of strength with as numeral the product of
      *         the old numeral and the given factor.
      *       | else return new Strength(numeral * factor)
+     * @note Private because specification dictates strength should only be multiplied or
+     * divided by whole numbers.
      */
     private Strength multiply(double factor){
         if (factor == 0){

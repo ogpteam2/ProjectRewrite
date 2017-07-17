@@ -75,6 +75,18 @@ public class Weight implements Comparable<Weight> {
     }
 
     /**
+     * Initialize this new weight with given numeral and unit "kg".
+     *
+     * @param numeral The numeral for this new weight.
+     * @effect The new weight is initialized with the given numeral
+     * and the unit "kg".
+     * | this(numeral, Unit.kg)
+     */
+    public Weight(int numeral) {
+        this(numeral, Unit.kg);
+    }
+
+    /**
      * Initialise a new weight with given numeral in integer form and the given unit.
      *
      * @param numeral Numeral in integer form.
@@ -386,6 +398,17 @@ public class Weight implements Comparable<Weight> {
      */
     public Weight multiply(int factor) {
         return multiply(new BigDecimal(factor));
+    }
+
+    /**
+     * Multiplies this weight by a given amount of strength.
+     * @param factor
+     *        Instance of strength to multiply by.
+     * @return New instance of Weight with as numeral the product of the numerals
+     * from the current weight and the given strength.
+     */
+    public Weight multiply(Strength factor) {
+        return this.multiply(factor.getNumeral());
     }
 
 }

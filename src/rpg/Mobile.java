@@ -4,12 +4,12 @@ import rpg.exception.InvalidNameException;
 import rpg.inventory.AnchorType;
 import rpg.inventory.Anchorpoint;
 import rpg.inventory.Item;
+import rpg.value.Strength;
 import rpg.value.Weight;
 
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.regex.Pattern;
 
 public abstract class Mobile {
 
@@ -78,6 +78,8 @@ public abstract class Mobile {
      *
      */
 
+
+
     /*****************************
      * Anchorpoints
      *****************************/
@@ -144,6 +146,72 @@ public abstract class Mobile {
     }
 
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;
+
+    /*****************************
+     * Strength
+     *****************************/
+
+    /**
+     * Getter for strength.
+     */
+    public Strength getStrength() {
+        return strength;
+    }
+
+    /**
+     * Multiplies the current strength with the given factor.
+     * @param factor
+     *        Multiplication factor.
+     * @effect Sets the strength to the current strength multiplied by the given factor.
+     * | setStrength(getStrength().multiply(factor))
+     */
+    public void multiplyStrength(int factor){
+        setStrength(getStrength().multiply(factor));
+    }
+
+    /**
+     * Divides the strength by the given divisor.
+     * @param divisor
+     *        Value to divide by.
+     * @effect Sets the strength to the current strength divided by the given divisor.
+     * | setStrength(getStrength().divide(divisor))
+     */
+    public void divideStrength(int divisor){
+        setStrength(getStrength().divide(divisor));
+    }
+
+    /**
+     * Setter for strength.
+     * @param strength
+     *        Value the attribute strength is to be set to.
+     * @effect If the given instance of Strength is effective, the attribute is set.
+     * | if isValidStrength(strength)
+     * |    this.strength = strength
+     * @effect Else the attribute is set to no strength at all.
+     * | this.strength = Strength.none
+     * @note Private because strength should only be multiplied or divided by integers,
+     * not directly set.
+     */
+    private void setStrength(Strength strength) {
+        if (isValidStrength(strength)){
+            this.strength = strength;
+        } else {
+            this.strength = Strength.none;
+        }
+    }
+
+    /**
+     * Checks if the given instance of Strength is effective for a Mobile.
+     * @param strength
+     *        Strength instance to be checked.
+     * @return If the given Strength is not a null reference, return true.
+     * | return strength != null
+     */
+    public boolean isValidStrength(Strength strength){
+        return strength != null;
+    }
+
+    private Strength strength = null;
 
     /*****************************
      * Capacity
