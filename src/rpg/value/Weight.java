@@ -88,7 +88,7 @@ public class Weight implements Comparable<Weight> {
     }
 
     /**
-     * Variable referencing a weight of 0.0 kg
+     * Constantly defined instance of weight depicting a weight of 0 kilograms.
      */
     public final static Weight kg_0 =
             new Weight(BigDecimal.ZERO, Unit.kg);
@@ -209,7 +209,6 @@ public class Weight implements Comparable<Weight> {
      * The rounding is done using the half even method, dictating that rounding is
      * done to the nearest neighbour and the even neighbour if equidistant.
      */
-    @Immutable
     public MathContext getContext() {
         return new MathContext(
                 getUnit().getPrecision(),
