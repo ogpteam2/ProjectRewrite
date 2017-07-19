@@ -1,7 +1,7 @@
 package rpg.inventory;
 
-import rpg.IDGeneration.FibonacciGenerator;
-import rpg.IDGeneration.IDGenerator;
+import rpg.utility.FibonacciGenerator;
+import rpg.utility.IDGenerator;
 import rpg.exception.InvalidItemException;
 import rpg.value.Weight;
 
@@ -34,7 +34,7 @@ public class Purse extends Container {
      */
     public Purse(Weight weight, Weight capacity, Ducat... ducats) {
         this(weight, capacity);
-        content.addAll(Arrays.asList(ducats));
+        addDucats(ducats);
     }
 
     /**
@@ -44,11 +44,11 @@ public class Purse extends Container {
      * @param capacity Capacity of this purse expressed in terms of weight.
      * @effect Uses the superclass constructor to set value, weight and capacity.
      * As the purse has no value itself, value is set to zero.
-     * @see Container#Container(int, Weight, Weight)
+     * @see Container#Container(Weight, Weight)
      * | super(0, weight, capacity)
      */
     public Purse(Weight weight, Weight capacity) {
-        super(0, weight, capacity);
+        super(weight, capacity);
         this.content = new Stack<>();
     }
 
@@ -66,6 +66,15 @@ public class Purse extends Container {
     /*****************************
      * 6.2: Content
      *****************************/
+
+    /**
+     * Counts how many ducats are in the purse
+     * @return The size of the content stack.
+     * | content.size()
+     */
+    public int getNbOfItems(){
+        return content.size();
+    }
 
     /**
      * Adds the given ducat to the contents of this purse.

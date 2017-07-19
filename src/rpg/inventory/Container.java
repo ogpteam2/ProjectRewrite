@@ -14,14 +14,16 @@ import rpg.value.Weight;
  */
 public abstract class Container extends Item implements hasParent {
 
-    public Container(int value, Weight weight, Weight capacity) {
-        super(value, weight);
+    public Container(Weight weight, Weight capacity) {
+        super(weight);
 
     }
 
     /*****************************
      * Content - defensive
      *****************************/
+
+    public abstract int getNbOfItems();
 
     /**
      * Adds the given item to the prime object.

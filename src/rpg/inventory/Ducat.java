@@ -1,6 +1,6 @@
 package rpg.inventory;
 
-import rpg.IDGeneration.IDGenerator;
+import rpg.utility.IDGenerator;
 import rpg.value.Unit;
 import rpg.value.Weight;
 
@@ -11,7 +11,7 @@ import java.util.Stack;
  *
  * @invar The value of a ducat shall always be equal to one, as it is
  * to be used as a monetary unit.
- * | getValue() == 1
+ * | getOwnValue() == 1
  */
 public class Ducat extends Item {
 
@@ -52,7 +52,7 @@ public class Ducat extends Item {
      * @return The value of a ducat: one.
      * | return 1
      */
-    public int getValue() {
+    public int getOwnValue() {
         return this.value;
     }
 

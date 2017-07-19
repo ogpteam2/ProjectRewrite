@@ -229,7 +229,7 @@ public class Weight implements Comparable<Weight> {
     }
 
     /************************************************
-     * Utility
+     * utility
      ************************************************/
 
     /**
@@ -260,8 +260,19 @@ public class Weight implements Comparable<Weight> {
      ************************************************/
 
     /**
+     * Checks if this weight has a smaller value than the given other.
+     * @param other
+     *        Other weight to compare to.
+     * @return True if the method compareTo returns a -1 when comparing this to other.
+     *       | return this.compareTo(other) == -1
+     */
+    public boolean isSmallerThan(Weight other){
+        return this.compareTo(other) == -1;
+    }
+
+    /**
      * Compare this weight to another.
-     *
+     * todo check this
      * @param other The other weight to compare with this one.
      * @return If the units are not the same, convert the other weight
      * to the unit of the prime object and compare.
@@ -270,7 +281,7 @@ public class Weight implements Comparable<Weight> {
      */
     @Override
     public int compareTo(Weight other) {
-        if (other == null) return 0;
+        if (other == null) return 1;
         if (getUnit() == other.getUnit())
             return getNumeral().compareTo(other.getNumeral());
         else

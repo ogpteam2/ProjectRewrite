@@ -19,10 +19,4 @@ public class WeaponTest {
 
     }
 
-    @Test
-    public void testConstructor() throws AssertionError{
-        one = new Weapon(100, Weight.kg_0, 6);
-        assertNull(one);
-    }
-
 }

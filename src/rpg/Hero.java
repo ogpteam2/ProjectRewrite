@@ -2,7 +2,6 @@ package rpg;
 
 import rpg.inventory.AnchorType;
 import rpg.value.Strength;
-import rpg.value.Unit;
 import rpg.value.Weight;
 
 import java.math.BigDecimal;
@@ -16,7 +15,19 @@ import java.util.HashMap;
  */
 public class Hero extends Mobile {
 
-    public static EnumSet<AnchorType> ANCHORTYPES_HERO = EnumSet.of(
+    /*****************************
+     * Constants
+     *****************************/
+
+    /**
+     * Constant specifying what protection factor a hero should have.
+     */
+    private static final int PROTECTION = 10;
+
+    /**
+     * Enumset specifying what types of Anchorpoints a hero should have.
+     */
+    private static final EnumSet<AnchorType> ANCHORTYPES_HERO = EnumSet.of(
             AnchorType.back,
             AnchorType.belt,
             AnchorType.body,
@@ -24,8 +35,12 @@ public class Hero extends Mobile {
             AnchorType.rhand
     );
 
+    /*****************************
+     * 1.0: Constructors
+     *****************************/
+
     public Hero(String name){
-        super(name, ANCHORTYPES_HERO);
+        super(name, , ANCHORTYPES_HERO);
     }
 
     /*****************************
@@ -96,7 +111,7 @@ public class Hero extends Mobile {
     }
 
     /**
-     * Calculates the capacity this mobile has.
+     * Calculates the carrying capacity this mobile has.
      * @return The capacity calculated based on the mobile's strength.
      * | return getCapacity(getStrength())
      */
@@ -149,4 +164,26 @@ public class Hero extends Mobile {
             return getCapacity(newStrength).multiply(4);
         }
     }
+
+    /*****************************
+     * 1.5: Protection
+     *****************************/
+
+    /**
+     * Gets the protection factor for this hero.
+     * @return the constant specifying the amount of protection a hero has.
+     */
+    @Override
+    public int getProtection(){
+        return PROTECTION;
+    }
+
+    /*****************************
+     * 1.8: Protection
+     *****************************/
+
+    protected void heal(){
+
+    }
+
 }

@@ -7,13 +7,23 @@ import rpg.inventory.Item;
 import rpg.value.Strength;
 import rpg.value.Weight;
 
-import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
 public abstract class Mobile {
 
+    /*****************************
+     * Constructors
+     *****************************/
+
     /**
+     *
+     * @param maximumHitpoints
+     *        The maximum hitpoints this mobile can have.
+     * @pre The given maximum hitpoints must be effective.
+     * | canHaveAsHitpoints(maximumHitpoints)
+     * @effect The maximum hitpoints are set to the given value.
+     * @effect The current hitpoints are set to the maximum hitpoints.
      * @param anchorTypes
      * @post The mobile has an anchorpoint corresponding to each of the
      * types specified in the set anchorTypes.
@@ -21,9 +31,13 @@ public abstract class Mobile {
      * |    anchorpoints.get(type) != null
      * @note All
      */
-    public Mobile(String name, EnumSet<AnchorType> anchorTypes) {
+    public Mobile(String name, int maximumHitpoints, EnumSet<AnchorType> anchorTypes) {
         //name
         setName(name);
+        //hitpoints
+        assert canHaveAsHitpoints(maximumHitpoints);
+        this.maximumHitpoints = maximumHitpoints;
+        setCurrentHitpoints(maximumHitpoints);
         //anchorpoints
         anchorpoints = new EnumMap<AnchorType, Anchorpoint>(AnchorType.class);
         for (AnchorType type : anchorTypes) {
@@ -73,12 +87,22 @@ public abstract class Mobile {
      * Hitpoints - nominal
      *****************************/
 
+    public boolean canHaveAsHitpoints(int hitpoints){
+        return false;
+    }
 
-    /**
-     *
-     */
+    public int getCurrentHitpoints() {
+        return currentHitpoints;
+    }
 
+    public void setCurrentHitpoints(int currentHitpoints) {
+        assert canHaveAsHitpoints(currentHitpoints);
+        this.currentHitpoints = currentHitpoints;
+    }
 
+    private int currentHitpoints = 0;
+
+    private final int maximumHitpoints;
 
     /*****************************
      * Anchorpoints
@@ -102,7 +126,8 @@ public abstract class Mobile {
      * @pre The anchorpoint may not have an item in it as dictated by
      * it's precondition.
      */
-    public void addItemToAnchorpoint(AnchorType type, Item item) {
+    public void addItemToAnchorpoint(AnchorType type, Item item)
+            throws IllegalArgumentException{
         getAnchorpoint(type).addItem(item);
     }
 
@@ -131,7 +156,33 @@ public abstract class Mobile {
      * |     sum += anchorpoint.getContent().getWeight()
      */
     public Weight getCurrentCarriedWeight() {
-        return new Weight(BigDecimal.ZERO);
+        Weight sum = Weight.kg_0;
+        for (Anchorpoint point:
+             anchorpoints.values()) {
+            sum = sum.add(point.getWeightOfContent());
+        }
+        return sum;
+    }
+
+    /**
+     * Checks if adding the given item to the current set of carried items will
+     * exceed the carrying capacity of this mobile.
+     * @param item
+     *        Item to check.
+     * @return False if the given item is a null reference.
+     * | if item == null return false
+     * @return Else adds the weight of the item and the current carried weight
+     * together and checks if that exceeds the capacity.
+     * | return exceedsCapacity(item.getWeight + getCurrentCarriedWeight)
+     */
+    public boolean exceedsCapacity(Item item){
+        if (item == null) {
+            return false;
+        } else {
+            Weight itemWeight = item.getWeight();
+            Weight current = getCurrentCarriedWeight();
+            return exceedsCapacity(current.add(itemWeight));
+        }
     }
 
     /**
@@ -142,7 +193,7 @@ public abstract class Mobile {
      * | getCapacity().compareTo(weight) == -1
      */
     public boolean exceedsCapacity(Weight weight) {
-        return getCapacity().compareTo(weight) == -1;
+        return getCapacity().isSmallerThan(weight);
     }
 
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;
@@ -159,7 +210,7 @@ public abstract class Mobile {
     }
 
     /**
-     * Multiplies the current strength with the given factor.
+     * Sets the strength to a multiple of the current strength.
      * @param factor
      *        Multiplication factor.
      * @effect Sets the strength to the current strength multiplied by the given factor.
@@ -170,7 +221,7 @@ public abstract class Mobile {
     }
 
     /**
-     * Divides the strength by the given divisor.
+     * Sets the strength to a fraction of the current strength.
      * @param divisor
      *        Value to divide by.
      * @effect Sets the strength to the current strength divided by the given divisor.
@@ -218,4 +269,10 @@ public abstract class Mobile {
      *****************************/
 
     public abstract Weight getCapacity();
+
+    /*****************************
+     * Protection
+     *****************************/
+
+    public abstract int getProtection();
 }

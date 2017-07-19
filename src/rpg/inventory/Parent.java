@@ -39,4 +39,12 @@ public interface Parent {
      *        Item to look for.
      */
     boolean contains(Item item);
+
+    /**
+     * Checks if adding the given item will exceed the capacity of the holder or
+     * any of the parents.
+     * @param item
+     *        Item to check.
+     */
+    boolean exceedsCapacity(Item item);
 }

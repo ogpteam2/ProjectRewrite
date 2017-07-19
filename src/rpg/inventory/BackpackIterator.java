@@ -33,6 +33,20 @@ public class BackpackIterator implements Enumeration<Item> {
         arrayListIterator = hashMapIterator.next().iterator();
     }
 
+    public BackpackIterator(HashMap<Long, ArrayList<Item>> content, boolean skipNested){
+        this(content);
+        this.skipNested = skipNested;
+    }
+
+    /*****************************
+     * Nested item iterator
+     *****************************/
+
+    //todo specify this
+    boolean skipNested = false;
+
+    BackpackIterator nestedItemIterator = null;
+
     /*****************************
      * Content
      *****************************/
@@ -91,9 +105,25 @@ public class BackpackIterator implements Enumeration<Item> {
      */
     @Override
     public Item nextElement() throws NoSuchElementException {
-        if(!arrayListIterator.hasNext()){
-            arrayListIterator = hashMapIterator.next().iterator();
+        if(nestedItemIterator !=  null){
+            if(nestedItemIterator.hasMoreElements()){
+                return nestedItemIterator.nextElement();
+            } else {
+                nestedItemIterator = null;
+                return nextElement();
+            }
+        } else {
+            if (arrayListIterator.hasNext()){
+                Item next = arrayListIterator.next();
+                if (skipNested && next instanceof Backpack){
+                    nestedItemIterator = ((Backpack) next).iterator();
+                }
+                return next;
+            }
+            else {
+                arrayListIterator = hashMapIterator.next().listIterator();
+                return nextElement();
+            }
         }
-        return arrayListIterator.next();
     }
 }

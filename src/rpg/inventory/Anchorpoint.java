@@ -4,6 +4,8 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import rpg.exception.InvalidItemException;
 import rpg.Mobile;
+import rpg.value.Weight;
+import rpg.value.test.WeightTest;
 
 /**
  * A class of Anchorpoints to which mobiles can attach Items.
@@ -63,12 +65,10 @@ public class Anchorpoint implements Parent {
      * @param item Item to be checked.
      * @return An anchorpoint can contain an item if carrying the item will not
      * cause the holding mobile to exceed it's carrying capacity.
-     * | return !holder.exceedsCapacity(holder.getCurrentCarriedWeight.add(item.getWeight))
+     * | return !exceedsCapacity(item)
      */
     public boolean canHaveAsItem(Item item) {
-        return !getHolder().exceedsCapacity(
-                getHolder().getCurrentCarriedWeight() //get weight currently carried by mobile
-                        .add(item.getWeight())); //add weight carrying the item would add
+        return !exceedsCapacity(item); //add weight carrying the item would add
     }
 
     /**
@@ -84,10 +84,40 @@ public class Anchorpoint implements Parent {
      * Content
      ******************************/
 
+    /**
+     * Checks if adding the given item would exceed the holder's capacity.
+     * @param item
+     *        Item to be checked.
+     * @return If the given item is a null reference, return false.
+     *       | if item == null return false
+     * @return Else add the weight of the item to the current carried weight and check
+     *         if that weight exceeds the capacity of the holder.
+     */
+    @Override
+    public boolean exceedsCapacity(Item item) {
+        if (item == null) {
+            return false;
+        } else {
+            Weight newWeight = getHolder().getCurrentCarriedWeight()
+                    .add(item.getWeight());
+            return getHolder().exceedsCapacity(newWeight);
+        }
+
+    }
+
     @Raw
     @Basic
     public Item getContent() {
         return content;
+    }
+
+    //todo specify
+    public Weight getWeightOfContent(){
+        if(containsItem()){
+            return getContent().getWeight();
+        } else {
+            return Weight.kg_0;
+        }
     }
 
     @Raw
@@ -103,7 +133,7 @@ public class Anchorpoint implements Parent {
      *                              | if(!containsItem()) throw InvalidItemException
      * @post The item's parent has to be a null reference.
      * | item.getParent() == null
-     * @post The anchorpoint has a null refrence
+     * @post The anchorpoint has a null reference as its content.
      */
     public void dropItem(Item item) throws InvalidItemException, NullPointerException {
         if (item == null) throw new NullPointerException("Item is null reference!");

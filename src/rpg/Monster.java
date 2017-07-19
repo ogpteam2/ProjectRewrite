@@ -10,21 +10,28 @@ import java.util.EnumSet;
  */
 public class Monster extends Mobile {
 
+    /*****************************
+     * Constants
+     *****************************/
+
+    /**
+     * Constant specifying what protection factor a hero should have.
+     */
+    private static final int PROTECTION = 10;
+
+    /*****************************
+     * 2.0: Constructors
+     *****************************/
+
     /**
      * @param anchorPoints An enumset of the AnchorType enum specifying which
      *                     types of anchorpoints this monster has.
      * @post
      */
-    public Monster(EnumSet<AnchorType> anchorPoints) {
-        super(anchorPoints);
+    public Monster(String name, EnumSet<AnchorType> anchorPoints) {
+        super(name, , anchorPoints);
 
     }
-
-    @Override
-    public Weight getCapacity() {
-        return null;
-    }
-
 
     /*****************************
      * 2.1: Name
@@ -45,4 +52,19 @@ public class Monster extends Mobile {
         return name.matches("^[A-Z][A-Za-z ']+");
     }
 
+    /*****************************
+     * 2.6: Strength - Capacity
+     *****************************/
+
+    /**
+     * Calculates the carrying capacity this mobile has.
+     * @return The carrying capacity in kilograms is equal to the strength
+     * multiplied by 9.
+     * | return new Weight(strength * 9)
+     */
+    @Override
+    public Weight getCapacity() {
+        Weight base = new Weight(9);
+        return base.multiply(getStrength());
+    }
 }

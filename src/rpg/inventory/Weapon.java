@@ -3,8 +3,8 @@ package rpg.inventory;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
-import rpg.IDGeneration.IDGenerator;
-import rpg.IDGeneration.WeaponIDGenerator;
+import rpg.utility.IDGenerator;
+import rpg.utility.WeaponIDGenerator;
 import rpg.Mobile;
 import rpg.value.Weight;
 
@@ -47,8 +47,6 @@ public class Weapon extends Item implements hasParent{
     /**
      * Creates a new weapon with the given
      *
-     * @param value
-     *        Value of the weapon.
      * @param weight
      *        Weight of the weapon.
      * @param dmg
@@ -57,8 +55,8 @@ public class Weapon extends Item implements hasParent{
      * @pre The given damage must be an effective value.
      * | canHaveAsDamage(dmg)
      */
-    public Weapon(int value, Weight weight, int dmg) {
-        super(value, weight);
+    public Weapon(Weight weight, int dmg) {
+        super(weight);
         setDamage(dmg);
     }
 
@@ -189,6 +187,7 @@ public class Weapon extends Item implements hasParent{
     }
 
     /**
+     * todo finish dis shite
      * Sets the parent for this weapon.
      * @pre The parent has to contain a reference to this weapon.
      * @param parent

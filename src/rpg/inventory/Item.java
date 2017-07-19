@@ -3,7 +3,7 @@ package rpg.inventory;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
-import rpg.IDGeneration.IDGenerator;
+import rpg.utility.IDGenerator;
 import rpg.value.Weight;
 
 /**
@@ -19,7 +19,6 @@ public abstract class Item {
     /**
      * Creates a new item with the given value, weight and identifier.
      *
-     * @param value
      * @param weight The weight of this item.
      * @post The weight of this item must be a valid instance of the
      * Weight value class.
@@ -28,7 +27,7 @@ public abstract class Item {
      * with a negative numeral.
      * Checking for a null reference is the only needed check here.
      */
-    public Item(int value, Weight weight) {
+    public Item(Weight weight) {
         if (weight != null) this.weight = weight;
         else this.weight = Weight.kg_0;
         this.identifier = getIDGenerator().generateID();
@@ -37,12 +36,6 @@ public abstract class Item {
     /*****************************
      * Value
      *****************************/
-
-    /**
-     * Variable storing the value of this item. The value is expressed as
-     * an integer amount of ducats.
-     */
-    protected int value = 0;
 
     /**
      * Calculates or returns the total value of this item.
