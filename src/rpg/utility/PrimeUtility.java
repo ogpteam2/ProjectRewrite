@@ -28,7 +28,7 @@ public class PrimeUtility {
 	 */
 	public PrimeUtility(){
 		primeSet = new TreeSet<>();
-		primeSet.add(2L);
+		primeSet.add(2);
 	}
 
 	/*****************************
@@ -39,7 +39,7 @@ public class PrimeUtility {
 	 * Sorted set storing all the primes this utility has generated.
      * Set is sorted according to natural order.
 	 */
-    private TreeSet<Long> primeSet;
+    private TreeSet<Integer> primeSet;
 
     /*****************************
      * Calculation
@@ -58,12 +58,12 @@ public class PrimeUtility {
      * | then:
      * |    return p
 	 */
-	private long generateNextPrime(TreeSet<Long> previousPrimes){
-		long current = previousPrimes.last();
+	private int generateNextPrime(TreeSet<Integer> previousPrimes){
+		int current = previousPrimes.last();
 		SEARCH:
 		while(true){
 			current++;
-			for(long p : previousPrimes){
+			for(int p : previousPrimes){
 				if (current % p == 0) continue SEARCH;
 			}
 			return current;
@@ -81,18 +81,18 @@ public class PrimeUtility {
      * @return Whether number exists in the list of primes.
      * | return primeList.contains(number)
      */
-	public boolean isPrime(long number){
+	public boolean isPrime(int number){
 		while(number > primeSet.last()){
 		    primeSet.add(generateNextPrime(primeSet));
         }
         return primeSet.contains(number);
 	}
 	
-	public long closestPrime(long number){
+	public long closestPrime(int number){
 		if(isPrime(number)) return number;
 		else{
-			long ceiling = primeSet.ceiling(number);
-			long floor = primeSet.floor(number);
+			int ceiling = primeSet.ceiling(number);
+			int floor = primeSet.floor(number);
 			if((number - floor) > (ceiling - number)){
 			    return ceiling;
             } else {
