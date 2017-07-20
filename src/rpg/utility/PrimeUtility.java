@@ -88,7 +88,7 @@ public class PrimeUtility {
         return primeSet.contains(number);
 	}
 	
-	public long closestPrime(int number){
+	public int closestPrime(int number){
 		if(isPrime(number)) return number;
 		else{
 			int ceiling = primeSet.ceiling(number);

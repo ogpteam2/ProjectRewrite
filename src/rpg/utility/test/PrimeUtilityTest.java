@@ -8,49 +8,10 @@ import org.junit.Test;
 import rpg.utility.PrimeUtility;
 
 public class PrimeUtilityTest {
-	
-	PrimeUtility gen;
-	long[] littlePrimeList = {2,3,5,7,11,13,17,19};
-	long[] generatedPrimeList;
-	
+
 	@Before
 	public void setUp() {
-		gen = new PrimeUtility();
-		generatedPrimeList = new long[littlePrimeList.length];
+
 	}
 
-	@Test
-	public void firstElementsCheck() {
-		for(int i = 0; i < littlePrimeList.length; i++){
-			generatedPrimeList[i] = gen.nextID();
-		}
-		assertArrayEquals(littlePrimeList,generatedPrimeList);
-	}
-	
-	@Test
-	public void stressTest(){
-		for(int i = 0; i<10000; i++){
-			gen.nextID();
-		}
-	}
-	
-	@Test
-	public void nextID(){
-		gen.nextID();
-	}
-	
-	@Test
-	public void isPrimeTest(){
-		assertTrue(gen.isPrime(229));
-	}
-	
-	@Test
-	public void closestPrimeTest(){
-		assertEquals(7L, gen.closestPrime(9L));
-	}
-	
-	@Test
-	public void closestPrimeTest2(){
-		assertEquals(11L, gen.closestPrime(11L));
-	}
 }

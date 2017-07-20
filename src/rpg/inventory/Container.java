@@ -70,7 +70,7 @@ public abstract class Container extends Item implements hasParent {
     /*****************************
      * Capacity
      *****************************/
-
+    //todo what is this?
     /**
      * Checks whether adding the given item will cause the total weight of
      * items contained to exceed the capacity of the container.

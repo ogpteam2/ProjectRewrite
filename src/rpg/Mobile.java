@@ -4,6 +4,7 @@ import rpg.exception.InvalidNameException;
 import rpg.inventory.AnchorType;
 import rpg.inventory.Anchorpoint;
 import rpg.inventory.Item;
+import rpg.utility.PrimeUtility;
 import rpg.value.Strength;
 import rpg.value.Weight;
 
@@ -88,7 +89,7 @@ public abstract class Mobile {
      *****************************/
 
     public boolean canHaveAsHitpoints(int hitpoints){
-        return false;
+        return primeUtil.isPrime(hitpoints);
     }
 
     public int getCurrentHitpoints() {
@@ -100,9 +101,19 @@ public abstract class Mobile {
         this.currentHitpoints = currentHitpoints;
     }
 
-    private int currentHitpoints = 0;
+    private int currentHitpoints;
+
+    public int getMaximumHitpoints() {
+        return maximumHitpoints;
+    }
 
     private final int maximumHitpoints;
+
+    /**
+     * Utility for finding primes. Static as it stores all primes that have been generated
+     * before.
+     */
+    protected static PrimeUtility primeUtil = new PrimeUtility();
 
     /*****************************
      * Anchorpoints

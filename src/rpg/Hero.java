@@ -9,6 +9,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by elias on 15/07/2017.
@@ -36,7 +37,7 @@ public class Hero extends Mobile {
     );
 
     /*****************************
-     * 1.0: Constructors
+     * 1.10: Constructors
      *****************************/
 
     public Hero(String name){
@@ -179,11 +180,25 @@ public class Hero extends Mobile {
     }
 
     /*****************************
-     * 1.8: Protection
+     * 1.8: Heal
      *****************************/
 
+    /**
+     * Heals the hero by a random amount.
+     * @effect Calculates the difference between the maximum hitpoints and the current hitpoints,
+     * multiplies that by a random percentage. Rounds that amount, adds it to the current hitpoints.
+     * The current hitpoints are then set to the closest prime to that value.
+     * | let:
+     * todo specify this better.
+     */
     protected void heal(){
-
+        int hpDiff = getMaximumHitpoints() - getCurrentHitpoints();
+        Random random = new Random();
+        float percentage = random.nextFloat();
+        float healAmount = hpDiff * percentage;
+        int roundedHealAmount = Math.round(healAmount);
+        int nextHP = primeUtil.closestPrime(roundedHealAmount + getCurrentHitpoints());
+        setCurrentHitpoints(nextHP);
     }
 
 }

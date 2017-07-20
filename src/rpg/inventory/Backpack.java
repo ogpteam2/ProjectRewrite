@@ -6,6 +6,7 @@ import rpg.utility.IDGenerator;
 import rpg.exception.InvalidItemException;
 import rpg.value.Weight;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -171,12 +172,24 @@ public class Backpack extends Container implements Parent {
 
     /**
      * Removes the reference to this item from the content data structure.
-     *
+     * @pre The referenced item must be in the backpack.
      * @param item
+     *        Item to remove.
+     * @effect If there is no other item with the same id in the backpack, the
+     * ArrayList for that identifier is removed.
+     * | if content.get(item.id).size == 1
+     * |    content.remove(item.id)
+     * @effect Else remove the item from the ArrayList
+     * | content.get(item.id).remove(item)
      */
     @Raw
     private void removeItem(Item item) {
-
+        ArrayList<Item> idArray = getContent().get(item.getIdentifier());
+        if (idArray.size() == 1){
+            content.remove(item.getIdentifier());
+        } else {
+            content.get(item.getIdentifier()).remove(item);
+        }
     }
 
     /**********************************
