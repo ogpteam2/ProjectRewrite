@@ -1,5 +1,6 @@
 package rpg.inventory;
 
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.utility.FibonacciGenerator;
 import rpg.utility.IDGenerator;
 import rpg.exception.InvalidItemException;
@@ -94,6 +95,8 @@ public class Purse extends Container {
         if (isTorn()) throw new InvalidItemException("Purse is torn!");
         if (ducat == null) {
             throw new NullPointerException("Given ducat contains null pointer");
+        } else if (getParent().exceedsCapacity(ducat)){
+            throw new InvalidItemException("Item exceeds capacity of parent.");
         } else {
             content.push(ducat);
             if (exceedsCapacity(getWeightOfContents())) {
@@ -124,7 +127,7 @@ public class Purse extends Container {
      * the purse, as it has been torn)
      * | if !ducats.empty():
      * |    for each ducat in ducats:
-     * |        try getParent.addItem(ducat)
+     * |        getParent.addItem(ducat)
      * @effect If that fails, the remaining ducats are dropped to the ground by just
      * letting the method terminating without adding the ducats to an inventory.
      */
