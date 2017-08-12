@@ -1,6 +1,5 @@
 package rpg.inventory;
 
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.utility.FibonacciGenerator;
 import rpg.utility.IDGenerator;
 import rpg.exception.InvalidItemException;
@@ -154,7 +153,7 @@ public class Purse extends Container {
      * @effect All of this purse's contents are removed.
      * | dropAllContent()
      * @effect This purse is dropped to the ground.
-     * | getParent().drop(this)
+     * | getParent().dropDucat(this)
      * @effect All ducats that were once in this purse are added to
      * the given other purse.
      * | purse.addDucats(this.content)
@@ -185,7 +184,7 @@ public class Purse extends Container {
      * @effect One ducat is removed from the contents of this purse.
      * | content.pop()
      */
-    private Ducat drop() {
+    private Ducat dropDucat() {
         return content.pop();
     }
 
@@ -257,12 +256,12 @@ public class Purse extends Container {
      * |     dropAllContent()
      * |     parent.dropItem(this)
      * @effect If the purse's parent is a Backpack, try to add all the ducats to the
-     * contents of the backpack. If there is no room in the backpack, drop the
+     * contents of the backpack. If there is no room in the backpack, dropDucat the
      * ducat on the ground. The purse is also dropped on the ground.
      * | if parent instanceof Backpack
      * |     for i < content.size
-     * |         try parent.addItem(drop())
-     * |     parent.drop(this)
+     * |         try parent.addItem(dropDucat())
+     * |     parent.dropDucat(this)
      * @note If trying to add a ducat to the backpack fails, this automatically drops
      * it to the ground because the reference to it has already been removed from
      * the content stack of the purse.
@@ -275,7 +274,7 @@ public class Purse extends Container {
         } else {
             for (int i = 0; i < getContent().size(); i++) {
                 try {
-                    getParent().addItem(this.drop());
+                    getParent().addItem(this.dropDucat());
                 } catch (InvalidItemException e) {
                     //nothing has to be done, reference to ducat already removed.
                 }

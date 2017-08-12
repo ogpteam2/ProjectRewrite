@@ -67,4 +67,41 @@ public class Monster extends Mobile {
         Weight base = new Weight(9);
         return base.multiply(getStrength());
     }
+
+    /*****************************
+     * 2.7: Hit
+     *****************************/
+
+    /**
+     * Checks whether the given mobile can be attacked.
+     * @param target
+     *        Target mobile to be checked.
+     * @return True if the given Mobile is an instance of Monster or Hero, ie not null as
+     * it is an instance of abstract class Mobile.
+     * | return target != null
+     */
+    @Override
+    public boolean canAttack(Mobile target){
+        return target != null;
+    }
+
+    @Override
+    public int generateAttackSeed() {
+        return 0;
+    }
+
+    @Override
+    public int calculateDamage() {
+        return 0;
+    }
+
+    @Override
+    public void onOpponentDeath() {
+
+    }
+
+    @Override
+    public int getProtection() {
+        return 0;
+    }
 }

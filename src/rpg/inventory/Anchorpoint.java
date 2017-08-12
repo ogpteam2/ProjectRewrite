@@ -5,7 +5,6 @@ import be.kuleuven.cs.som.annotate.Raw;
 import rpg.exception.InvalidItemException;
 import rpg.Mobile;
 import rpg.value.Weight;
-import rpg.value.test.WeightTest;
 
 /**
  * A class of Anchorpoints to which mobiles can attach Items.
@@ -60,7 +59,20 @@ public class Anchorpoint implements Parent {
     }
 
     /**
-     * Checks if the anchorpoint contain this item.
+     * Variable that determines what type this anchorpoint is.
+     *
+     * @note Using an enum type for the anchorpoint is an easy way to both reference
+     * the anchorpoint in a memory efficient way (using the enum instead of the
+     * object) and ensure a mobile can only have one of each (using enummap).
+     */
+    private final AnchorType type;
+
+    /*****************************
+     * Content - checks
+     *****************************/
+
+    /**
+     * Checks if the anchorpoint can contain this item.
      *
      * @param item Item to be checked.
      * @return An anchorpoint can contain an item if carrying the item will not
@@ -71,18 +83,43 @@ public class Anchorpoint implements Parent {
         return !exceedsCapacity(item); //add weight carrying the item would add
     }
 
-    /**
-     * Variable that determines what type this anchorpoint is.
-     *
-     * @note Using an enum type for the anchorpoint is an easy way to both reference
-     * the anchorpoint in a memory efficient way (using the enum instead of the
-     * object) and ensure a mobile can only have one of each (using enummap).
-     */
-    private final AnchorType type;
-
     /*****************************
-     * Content
-     ******************************/
+     * Content - manipulation
+     *****************************/
+
+    /**
+     * Transfers the content of this anchorpoint to the target parent.
+     * @param target
+     *        Parent instance to which the item is to be transferred.
+     * @throws InvalidItemException
+     *         If the target is null.
+     *       | target == null
+     *         If the anchorpoint does not contain an item.
+     *       | !this.containsItem()
+     *         If the target cannot accept the item.
+     *       | !target.canHaveAsItem(content)
+     * @effect Adds the item to the target parent, then removes it from the anchorpoint.
+     *       | target.addItem(content)
+     *       | dropItem()
+     */
+    public void transferContentTo(Parent target) throws InvalidItemException{
+        if (target == null) {
+            throw new InvalidItemException("Target is null!");
+        } else if (!containsItem()) {
+            throw new InvalidItemException("Anchorpoint contains no item!");
+        } else {
+            target.addItem(getContent());
+            dropItem();
+        }
+    }
+
+    /**
+     * Checks if the anchorpoint contains a weapon.
+     * @return True if the contained item is an instance of Weapon.
+     */
+    public boolean containsWeapon(){
+        return getContent() instanceof Weapon;
+    }
 
     /**
      * Checks if adding the given item would exceed the holder's capacity.
@@ -111,7 +148,13 @@ public class Anchorpoint implements Parent {
         return content;
     }
 
-    //todo specify
+    /**
+     * Calculates the weight of the item currently being held.
+     *
+     * @return If an item is being held, the weight of that item is returned.
+     * | if containsItem() return item.getWeight()
+     * @return 0 kg if
+     */
     public Weight getWeightOfContent(){
         if(containsItem()){
             return getContent().getWeight();
@@ -135,19 +178,20 @@ public class Anchorpoint implements Parent {
      * | item.getParent() == null
      * @post The anchorpoint has a null reference as its content.
      */
+    //todo this
     public void dropItem(Item item) throws InvalidItemException, NullPointerException {
         if (item == null) throw new NullPointerException("Item is null reference!");
         else if (item.equals(getContent())){
             throw new InvalidItemException("Anchorpoint does not contain given item!");
         } else {
             if (item instanceof hasParent){
-
-            } else {
-
+                ((hasParent) item).drop();
             }
+            setContent(null);
         }
     }
 
+    //todo specify this
     public void dropItem() throws InvalidItemException {
         try{
             dropItem(getContent());
@@ -174,11 +218,14 @@ public class Anchorpoint implements Parent {
         if (containsItem()) {
             throw new InvalidItemException("Anchorpoint already contains an item!");
         } else if (item == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Item is a null reference!");
         } else if (!canHaveAsItem(item)) {
             throw new InvalidItemException("Anchorpoint cannot accept this item!");
         } else {
-
+            setContent(item);
+            if(item instanceof hasParent){
+                ((hasParent) item).setParent(this);
+            }
         }
     }
 

@@ -8,8 +8,8 @@ import rpg.utility.PrimeUtility;
 import rpg.value.Strength;
 import rpg.value.Weight;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public abstract class Mobile {
 
@@ -88,36 +88,85 @@ public abstract class Mobile {
      * Hitpoints - nominal
      *****************************/
 
+    protected void die(){
+
+    }
+
+    public boolean isDead(){
+        return this.dead;
+    }
+
+    private boolean dead = false;
+
+    /**
+     * Checks if the given value is effective for hitpoints.
+     * @param hitpoints
+     *        Value to be checked.
+     * @return True if the given value is prime.
+     * | return isPrime(hitpoints)
+     */
     public boolean canHaveAsHitpoints(int hitpoints){
         return primeUtil.isPrime(hitpoints);
     }
 
+    /**
+     * Getter for the current hitpoints.
+     */
     public int getCurrentHitpoints() {
         return currentHitpoints;
     }
 
+    /**
+     * Setter for the current hitpoints.
+     * @param currentHitpoints
+     *        Value the current hitpoints are to be set to.
+     * @pre The given value must be effective for hitpoints.
+     * | canHaveAsHitpoints(currentHitpoints)
+     * @effect If the given value is effective, the current hitpoints are set.
+     * | this.currentHitpoints = currentHitpoints
+     */
     public void setCurrentHitpoints(int currentHitpoints) {
         assert canHaveAsHitpoints(currentHitpoints);
         this.currentHitpoints = currentHitpoints;
     }
 
+    /**
+     * Variable storing the current hitpoints of this mobile. The value stored here
+     * should lie between 0 and maximumHitpoints.
+     */
     private int currentHitpoints;
 
+    /**
+     * Getter for the maximum hitpoints.
+     */
     public int getMaximumHitpoints() {
         return maximumHitpoints;
     }
 
+    /**
+     * Variable storing the maximum value for the hitpoints of this mobile. The hitpoints
+     * of the mobile may never exceed this value.
+     */
     private final int maximumHitpoints;
 
     /**
-     * Utility for finding primes. Static as it stores all primes that have been generated
-     * before.
+     * Utility for finding primes. It builds up an internal list of primes so calculating if a number is prime
+     * only has to be done once. Making this object static ensures the list is shared among all instances of mobile.
      */
     protected static PrimeUtility primeUtil = new PrimeUtility();
 
     /*****************************
      * Anchorpoints
      *****************************/
+
+    public ArrayList<Item> getItemList(){
+        ArrayList<Item> itemList = new ArrayList<>();
+        for (Anchorpoint a : getAnchorpoints()){
+            if(a.containsItem())
+                itemList.add(a.getContent());
+        }
+        return itemList;
+    }
 
     /**
      * Retrieves the
@@ -207,6 +256,10 @@ public abstract class Mobile {
         return getCapacity().isSmallerThan(weight);
     }
 
+    protected final Collection<Anchorpoint> getAnchorpoints(){
+        return this.anchorpoints.values();
+    }
+
     private final EnumMap<AnchorType, Anchorpoint> anchorpoints;
 
     /*****************************
@@ -273,7 +326,59 @@ public abstract class Mobile {
         return strength != null;
     }
 
+    //todo specify
     private Strength strength = null;
+
+    /*****************************
+     * Hit
+     *****************************/
+
+    /**
+     * Checks whether the given mobile can be attacked.
+     * @param target
+     *        Target mobile to be checked.
+     * @return True if the given mobile can be attacked by this mobile.
+     */
+    public abstract boolean canAttack(Mobile target);
+
+    /**
+     * Generates a pseudo random number based on which hit success is
+     * determined.
+     * @return A pseudo random integer, of which specification is to be
+     * determined in subclass.
+     */
+    public abstract int generateAttackSeed();
+
+    /**
+     * Calculates the amount of damage this mobile does when it gets a successfull hit.
+     */
+    public abstract int calculateDamage();
+
+    /**
+     * Specifies behavior upon death of the opponent when performing a hit.
+     * To be executed after damage has been applied during hit algorithm.
+     */
+    public abstract void onOpponentDeath();
+
+    /**
+     * Applies the given damage to the
+     * @param dmg
+     */
+    protected void applyDamage(int dmg){
+
+    }
+
+    public void hit(Mobile target) throws IllegalArgumentException{
+        if(!canAttack(target))
+            throw new IllegalArgumentException("Mobile cannot attack this target.");
+        if(generateAttackSeed() >= target.getProtection()){
+            applyDamage(calculateDamage());
+            if(target.isDead()){
+                onOpponentDeath();
+            }
+        }
+        //else do nothing, hit did not succeed
+    }
 
     /*****************************
      * Capacity

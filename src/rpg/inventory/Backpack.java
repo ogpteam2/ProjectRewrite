@@ -1,6 +1,7 @@
 package rpg.inventory;
 
 import be.kuleuven.cs.som.annotate.Raw;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import rpg.utility.BinomialGenerator;
 import rpg.utility.IDGenerator;
 import rpg.exception.InvalidItemException;
@@ -29,8 +30,19 @@ public class Backpack extends Container implements Parent {
     private static BinomialGenerator idGen = new BinomialGenerator();
 
     /**********************************
-     * 4.2: Content - public methods
+     * 4.2: Content - Inspectors
      **********************************/
+
+    /**
+     * Checks if the given item can be added to the content of the backpack.
+     * @param item
+     *        Item to be added
+     * @return False if the item is null, will exceed the capacity or is already
+     *         in the backpack.
+     */
+    public boolean canHaveAsContent(Item item){
+        return item!=null && !exceedsCapacity(item) && !contains(item);
+    }
 
     /**
      * Checks if adding the item to the content of this backpack would exceed
@@ -91,12 +103,104 @@ public class Backpack extends Container implements Parent {
         }
     }
 
-    public void addItem(Item item) throws InvalidItemException{
+    /**********************************
+     * 4.2: Content - Mutators
+     **********************************/
 
+    /**
+     * Transfers the given item
+     * @param item
+     *        Item to be transferred
+     * @param destination
+     *        Destination of the item.
+     * @effect The item is removed from the contents of this backpack.
+     *       | removeItem(item)
+     * @effect The item is added to the destination parent.
+     *       | destination.addItem(item)
+     * @throws InvalidItemException
+     *         If the backpack does not contain this item.
+     *       | !containsItem(item)
+     * @throws NullPointerException
+     *         If the given destination or item is a null pointer.
+     *       | destination == null || item == null
+     * @throws InvalidItemException
+     *         The method addItem can throw an InvalidItemException, these are not caught to give
+     *         more debugging information as the error message will be more specific.
+     *         Refer to the specification of these methods within implementations of Parent for
+     *         conditions under which this error is thrown.
+     *         @see Backpack#addItem(Item) for backpacks
+     *         @see Anchorpoint#addItem(Item) for anchorpoints
+     */
+    public void transferItemTo(Item item, Parent destination)
+            throws InvalidItemException, NullPointerException{
+        if (!contains(item)) {
+            throw new InvalidItemException("This backpack does not contain the given item!");
+        } else if (destination == null) {
+            throw new NullPointerException("Destination is a null reference!");
+        } else if (item == null){
+            throw new NullPointerException("Item is a null reference!");
+        } else {
+            removeItem(item);
+            destination.addItem(item);
+        }
     }
 
-    public void dropItem(Item item) throws InvalidItemException{
+    /**
+     * Adds the given item to the content of this backpack.
+     * @param item
+     *        Item to be added.
+     * @effect The item is added to the content of this backpack.
+     *       | putItem(item)
+     * @effect If the item implements hasParent, the item receives a reference to this backpack as
+     *         it's parent.
+     *       | if (item instanceof hasParent)
+     *       |      item.setParent(this)
+     * @throws InvalidItemException
+     *         If the given item is already in this backpack.
+     *       | contains(item)
+     *         If adding the given item would exceed one of the capacities of the parents it would be
+     *         (indirectly) held in.
+     *       | exceedsCapacity(item)
+     * @throws NullPointerException
+     *         If the item is null.
+     *       | item == null
+     *
+     */
+    public void addItem(Item item) throws InvalidItemException, NullPointerException{
+        if (item == null) {
+            throw new NullPointerException("Item contains null reference!");
+        } else if(contains(item)) {
+            throw new InvalidItemException("Backpack already contains this item!");
+        } else if(exceedsCapacity(item)){
+            throw new InvalidItemException("Adding this item would exceed the capacity of this Backpack.");
+        } else {
+            putItem(item);
+            if(item instanceof hasParent){
+                ((hasParent) item).setParent(this);
+            }
+        }
+    }
 
+    /**
+     * Causes the given item to be dropped to the ground.
+     * @param item
+     *        Item to be dropped.
+     * @throws InvalidItemException
+     *         If the item given is not in this backpack.
+     *       | !this.contains(item)
+     * @throws NullPointerException
+     *         If the given item is null.
+     *       | item == null
+     */
+    public void dropItem(Item item) throws InvalidItemException, NullPointerException{
+        if (item == null) {
+            throw new NullPointerException("Item contains null reference!");
+        } else if(!contains(item)){
+            throw new InvalidItemException("Item does not exist in this backpack!");
+        } else {
+            removeItem(item);
+            item.drop();
+        }
     }
 
     /**********************************
@@ -246,6 +350,7 @@ public class Backpack extends Container implements Parent {
                 sum = sum.add(next.getWeight());
             }
         }
+        return sum;
     }
 
     /*****************************

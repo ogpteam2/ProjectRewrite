@@ -119,7 +119,7 @@ public class Strength implements Comparable<Strength>{
     }
 
     /*****************************
-     * Logical operations
+     * Logical inspectors
      *****************************/
 
     /**
@@ -138,9 +138,35 @@ public class Strength implements Comparable<Strength>{
         return getNumeral().compareTo(other.getNumeral());
     }
 
+    /**
+     * Checks the sign of the numeral of this strength.
+     * @return The result of the signum method on the numeral of this strength.
+     * | return numeral.signum()
+     */
+    public int signum(){
+        return getNumeral().signum();
+    }
+
     /*****************************
      * Arithmetic operations
      *****************************/
+
+    /**
+     * Adds the given amount to the numeral of this strength.
+     * @param amount
+     *        Amount to be added.
+     * @return If the resulting numeral is smaller than zero, return zero strength.
+     * | if(numeral + amount < 0) return Strength.none
+     * @return Else return new strength with as numeral the current strength plus the given
+     * amount.
+     * | return new Strength(numeral + amount)
+     */
+    public Strength add(int amount){
+        BigDecimal newNumeral = getNumeral().add(new BigDecimal(amount));
+        return new Strength(
+                newNumeral.signum() == -1 ? BigDecimal.ZERO : newNumeral
+        );
+    }
 
     /**
      * Multiplies the numeral of this strength with the given double factor.

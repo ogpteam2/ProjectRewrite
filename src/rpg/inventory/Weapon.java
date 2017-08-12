@@ -112,9 +112,13 @@ public class Weapon extends Item implements hasParent{
 
     /**
      * Getter for the damage of this weapon.
+     * @return If the weapon is destroyed, return 0
+     * | if isDestroyed() return 0
+     * @return Else act as getter for dmg
      */
     @Basic @Raw
     public int getDamage(){
+        if(isDestroyed()) return 0;
         return this.dmg;
     }
 
@@ -139,12 +143,15 @@ public class Weapon extends Item implements hasParent{
     /**
      * Calculates the value of this weapon.
      *
-     * @return Returns the product of the damage this weapon can do
+     * @return If the weapon is destroyed, return 0.
+     * | if isDestroyed return 0
+     * @return Else returns the product of the damage this weapon can do
      * and the value per damage.
      * | return getDamage * getValuePerDamage
      */
     @Override
     public int getValue() {
+        if(isDestroyed()) return 0;
         return getDamage() * getValuePerDamage();
     }
 
@@ -186,22 +193,82 @@ public class Weapon extends Item implements hasParent{
         }
     }
 
+    public boolean hasParent(){
+        return getParent() != null;
+    }
+
     /**
-     * todo finish dis shite
      * Sets the parent for this weapon.
      * @pre The parent has to contain a reference to this weapon.
      * @param parent
+     *        Reference to set the parent attribute to.
+     * @effect Sets the attribute parent to the given instance of Parent.
      */
     @Override @Basic @Raw
     public void setParent(Parent parent){
         this.parent = parent;
     }
 
+    /**
+     * Getter for the parent of this weapon.
+     */
     @Override @Basic @Raw
     public Parent getParent(){
         return this.parent;
     }
 
+    /**
+     * Specifies what a weapon should do when being dropped by a parent.
+     * @pre The weapon should have a parent.
+     * | hasParent()
+     * @effect The weapon's parent is set to null, effectively dropping it to the ground.
+     * | setParent(null)
+     * @effect The weapon destroys itself as it can't exist on the ground after being held
+     * inside a container.
+     * | destroy()
+     */
+    public void drop(){
+        assert hasParent();
+        setParent(null);
+        destroy();
+    }
+
+    /**
+     * Variable storing a reference to the parent of this weapon. Null if the weapon is lying
+     * on the ground.
+     */
     private Parent parent;
+
+    /*****************************
+     * Destructor
+     *****************************/
+
+    /**
+     * Destroys the weapon rendering it unusable.
+     * @effect The attribute destroyed is set to true.
+     * | this.destroyed = true
+     * @effect The weapon has no damage anymore.
+     * | getDamage() == 0
+     * @effect The weapon has no value anymore.
+     * | getValue() == 0
+     */
+    @Raw
+    private void destroy(){
+        this.destroyed = true;
+    }
+
+    /**
+     * Getter for the destroyed attribute.
+     */
+    @Raw
+    @Basic
+    public boolean isDestroyed(){
+        return destroyed;
+    }
+
+    /**
+     * Boolean storing whether the weapon has been destroyed.
+     */
+    private boolean destroyed = false;
 
 }

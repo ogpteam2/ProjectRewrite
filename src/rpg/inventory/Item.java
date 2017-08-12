@@ -88,4 +88,6 @@ public abstract class Item {
      * with what requirements there are for their respective identifiers.
      */
     abstract IDGenerator getIDGenerator();
+
+    public abstract void drop();
 }

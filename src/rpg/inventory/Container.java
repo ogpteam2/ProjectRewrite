@@ -25,27 +25,6 @@ public abstract class Container extends Item implements hasParent {
 
     public abstract int getNbOfItems();
 
-    /**
-     * Adds the given item to the prime object.
-     *
-     * @param item Item to be added.
-     * @throws InvalidItemException If the container cannot contain this item an InvalidItemException is thrown
-     *                              | !canHaveAsContent(Item item)
-     * @effect Item gets a reference
-     * @effect Prime object gets reference to item
-     */
-    public void addToContent(Item item) throws InvalidItemException {
-
-    }
-
-    /**
-     * @param item
-     * @throws InvalidItemException
-     */
-    public void removeFromContent(Item item) throws InvalidItemException {
-
-    }
-
     /*****************************
      * Weight
      *****************************/
@@ -115,6 +94,10 @@ public abstract class Container extends Item implements hasParent {
      */
     protected Weight capacity = null;
 
+    /*****************************
+     * Holder & Parent
+     *****************************/
+
     /**
      * Retrieves the holder of this container.
      * @return If the parent of this container is null, it means the container
@@ -134,6 +117,15 @@ public abstract class Container extends Item implements hasParent {
     }
 
     /**
+     * Checks whether the container has a parent.
+     * @return False if the parent is null
+     * | return parent != null
+     */
+    public boolean hasParent(){
+        return this.parent != null;
+    }
+
+    /**
      *
      * @return
      */
@@ -142,10 +134,25 @@ public abstract class Container extends Item implements hasParent {
         return this.parent;
     }
 
-    private Parent parent;
-
     @Override
     public void setParent(Parent parent) {
         this.parent = parent;
+    }
+
+    private Parent parent;
+
+    /*****************************
+     * Drop
+     *****************************/
+
+    /**
+     * Specifies what a container should do when being dropped by a parent.
+     * @pre The container should have a parent.
+     * | getParent != null
+     * @effect The container's parent is set to null, effectively dropping it to the ground.
+     * | setParent(null)
+     */
+    public void drop(){
+        setParent(null);
     }
 }
